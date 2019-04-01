@@ -203,5 +203,9 @@ public class Person implements Serializable {
     public String toString() {
         return "model.Person[ idPerson=" + idPerson + " ]";
     }
+
+    public Object getPhoto() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }
