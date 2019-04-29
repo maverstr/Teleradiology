@@ -5,6 +5,28 @@
     <artifactId>Teleradiology_ClientUpload</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>ulb.lisa</groupId>
+            <artifactId>Teleradiology</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+         <dependency>
+            <groupId>ca.uhn.hapi</groupId>
+            <artifactId>hapi-base</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.uhn.hapi</groupId>
+            <artifactId>hapi-structures-v23</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>pixelmed</groupId>
+            <artifactId>pixelmed-java</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
