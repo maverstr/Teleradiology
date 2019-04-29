@@ -271,6 +271,9 @@ public class MainWindow extends javax.swing.JFrame {
             
             receivedUIDList.setModel(receivedListModel);
         }
+        else{
+            System.out.println("Pas trouvé");
+        }
     }//GEN-LAST:event_doCFindButtonActionPerformed
 
     private void moveSelectedStudyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveSelectedStudyButtonActionPerformed

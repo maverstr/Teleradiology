@@ -76,8 +76,9 @@ public class ClientUpload {
                     SOPClass.StudyRootQueryRetrieveInformationModelFind,
                     identifier,
                     handler);
-            
-            return handler.receivedStudyInstanceUIDs;
+                System.out.println("coucou");
+                return handler.receivedStudyInstanceUIDs;
+        
         } catch (DicomException | DicomNetworkException | IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -96,5 +97,4 @@ public class ClientUpload {
             System.err.println(e);
         }
     }
-    
 }
