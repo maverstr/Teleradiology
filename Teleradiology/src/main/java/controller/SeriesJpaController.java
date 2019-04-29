@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import model.Report;
 import model.Series;
 
@@ -311,6 +313,21 @@ public class SeriesJpaController implements Serializable {
         } finally {
             em.close();
         }
+    }
+    
+        public Series findSeriesByUid(String seriesUid) {
+        EntityManager em = getEntityManager();
+        Series series = null;
+        try {
+            TypedQuery<Series> q = em.createNamedQuery("Series.findByUid", Series.class);
+            series = q.setParameter("uid", seriesUid).getSingleResult();
+        } catch(NoResultException ex){
+            return null;
+        } 
+        finally {
+            em.close();
+        }
+        return series;
     }
     
 }

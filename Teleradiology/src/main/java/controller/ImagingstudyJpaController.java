@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import model.Imagingstudy;
 
 /**
@@ -285,6 +287,22 @@ public class ImagingstudyJpaController implements Serializable {
         } finally {
             em.close();
         }
+    }
+    
+    
+    public Imagingstudy findImagingstudyByUid(String studyUid) {
+        EntityManager em = getEntityManager();
+        Imagingstudy is = null;
+        try {
+            TypedQuery<Imagingstudy> q = em.createNamedQuery("Imagingstudy.findByUid", Imagingstudy.class);
+            is = q.setParameter("uid", studyUid).getSingleResult();
+        } catch(NoResultException ex){
+            return null;
+        } 
+        finally {
+            em.close();
+        }
+        return is;
     }
     
 }
