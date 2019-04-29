@@ -33,7 +33,10 @@ import view.MainWindow;
 
 /**
  *
- * @author Adrien Foucart
+ * @author LVdP & RR
+ * 
+ * TO DO :
+ *  - adapte au serveur
  */
 public class DICOMSCU {
     
@@ -76,8 +79,8 @@ public class DICOMSCU {
             
             //retrieve all studies belonging to patient with name 'Bowen'
             new FindSOPClassSCU("localhost",
-                    4242,
-                    "ORTHANC",
+                    4242,       //TO modify
+                    "ORTHANC",  //TO modify
                     "FINDSCU",
                     SOPClass.StudyRootQueryRetrieveInformationModelFind,
                     identifier,

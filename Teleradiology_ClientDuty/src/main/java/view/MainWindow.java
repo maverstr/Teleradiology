@@ -8,6 +8,7 @@ package view;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import client.DICOMSCU;
+import client.Report;
 import model.Patient;
 import model.Person;
 
@@ -48,21 +49,11 @@ public class MainWindow extends javax.swing.JFrame {
         hl7HostTextField = new javax.swing.JTextField();
         hl7PortTextField = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
-        dcmPatientNameField = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        doCFindButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         receivedUIDList = new javax.swing.JList<>();
         moveSelectedStudyButton = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        fhirServerHost = new javax.swing.JTextField();
-        patientFhirSearchField = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        fhirSearchButton = new javax.swing.JButton();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        fhirSearchResultList = new javax.swing.JList<>();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        fhirResultDetailTextArea = new javax.swing.JTextArea();
+        refreshButton = new javax.swing.JButton();
+        reportButton = new javax.swing.JButton();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -113,15 +104,6 @@ public class MainWindow extends javax.swing.JFrame {
 
         fhirPane.addTab("Patient", patientPanel);
 
-        jLabel1.setText("Patient Name");
-
-        doCFindButton.setText("C-FIND");
-        doCFindButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                doCFindButtonActionPerformed(evt);
-            }
-        });
-
         jScrollPane1.setViewportView(receivedUIDList);
 
         moveSelectedStudyButton.setText("C-MOVE");
@@ -131,109 +113,52 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        refreshButton.setText("REFRESH");
+        refreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshButtonActionPerformed(evt);
+            }
+        });
+
+        reportButton.setText("Write report");
+        reportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reportButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(refreshButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(moveSelectedStudyButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(doCFindButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(187, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(moveSelectedStudyButton)
+                    .addComponent(reportButton))
+                .addContainerGap(167, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(doCFindButton))
+                .addComponent(refreshButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(reportButton)
+                        .addGap(15, 15, 15)
                         .addComponent(moveSelectedStudyButton)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
         fhirPane.addTab("PACS", jPanel1);
-
-        fhirServerHost.setText("http://fhirtest.uhn.ca/baseDstu3");
-        fhirServerHost.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fhirServerHostActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setText("Patient Name:");
-
-        fhirSearchButton.setText("Search");
-        fhirSearchButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fhirSearchButtonActionPerformed(evt);
-            }
-        });
-
-        fhirSearchResultList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                fhirSearchResultListValueChanged(evt);
-            }
-        });
-        jScrollPane3.setViewportView(fhirSearchResultList);
-
-        fhirResultDetailTextArea.setColumns(20);
-        fhirResultDetailTextArea.setRows(5);
-        jScrollPane4.setViewportView(fhirResultDetailTextArea);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(fhirServerHost, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(patientFhirSearchField)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(fhirSearchButton)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(fhirServerHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(patientFhirSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(fhirSearchButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-
-        fhirPane.addTab("FHIR", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -249,11 +174,17 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void moveSelectedStudyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveSelectedStudyButtonActionPerformed
+        String selectedUID = receivedUIDList.getSelectedValue();
+
+        scu.doMoveScu(selectedUID);
+    }//GEN-LAST:event_moveSelectedStudyButtonActionPerformed
+
     private void sendADTButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendADTButtonActionPerformed
         Person per = personForm.getPerson();
         Patient p = new Patient();
         p.setPerson(per);
-        
+
         String host = hl7HostTextField.getText();
         int port = Integer.valueOf(hl7PortTextField.getText());
         /*
@@ -266,35 +197,26 @@ public class MainWindow extends javax.swing.JFrame {
         */
     }//GEN-LAST:event_sendADTButtonActionPerformed
 
-    private void doCFindButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doCFindButtonActionPerformed
-        String searchPatientName = dcmPatientNameField.getText();
-        ArrayList<String> receivedStudyInstanceUIDs = scu.doFindScu(searchPatientName);
+    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+        // TODO : récupérer les dossiers non traités sur le serveur
+        ArrayList<String> receivedStudyInstanceUIDs = scu.doFindScu("*");
         if( receivedStudyInstanceUIDs != null ){
             DefaultListModel<String> receivedListModel = new DefaultListModel();
-            for( String uid : receivedStudyInstanceUIDs )
+            for( String uid : receivedStudyInstanceUIDs ){
                 receivedListModel.addElement(uid);
-            
+            }
             receivedUIDList.setModel(receivedListModel);
         }
-    }//GEN-LAST:event_doCFindButtonActionPerformed
+    }//GEN-LAST:event_refreshButtonActionPerformed
 
-    private void moveSelectedStudyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveSelectedStudyButtonActionPerformed
-        String selectedUID = receivedUIDList.getSelectedValue();
+    private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportButtonActionPerformed
+        // TODO : créer un DICOM SR et ouvrir une fentre pop-up pour modifier
+        //ce rapport
+        WriteReport reportWindow = new WriteReport();
+        reportWindow.setVisible(true);
+        //Report report = new Report();
         
-        scu.doMoveScu(selectedUID);
-    }//GEN-LAST:event_moveSelectedStudyButtonActionPerformed
-
-    private void fhirSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fhirSearchButtonActionPerformed
-        // TO DO
-    }//GEN-LAST:event_fhirSearchButtonActionPerformed
-
-    private void fhirSearchResultListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_fhirSearchResultListValueChanged
-        // TO DO
-    }//GEN-LAST:event_fhirSearchResultListValueChanged
-
-    private void fhirServerHostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fhirServerHostActionPerformed
-        // TODO add your handling code here
-    }//GEN-LAST:event_fhirServerHostActionPerformed
+    }//GEN-LAST:event_reportButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -334,28 +256,18 @@ public class MainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel adtRspLabel;
-    private javax.swing.JTextField dcmPatientNameField;
-    private javax.swing.JButton doCFindButton;
     private javax.swing.JTabbedPane fhirPane;
-    private javax.swing.JTextArea fhirResultDetailTextArea;
-    private javax.swing.JButton fhirSearchButton;
-    private javax.swing.JList<String> fhirSearchResultList;
-    private javax.swing.JTextField fhirServerHost;
     private javax.swing.JTextField hl7HostTextField;
     private javax.swing.JTextField hl7PortTextField;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JButton moveSelectedStudyButton;
-    private javax.swing.JTextField patientFhirSearchField;
     private javax.swing.JPanel patientPanel;
     private javax.swing.JList<String> receivedUIDList;
+    private javax.swing.JButton refreshButton;
+    private javax.swing.JButton reportButton;
     private javax.swing.JButton sendADTButton;
     // End of variables declaration//GEN-END:variables
     private view.CreatePersonForm personForm;
