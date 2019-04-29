@@ -8,19 +8,34 @@ package controller;
 import controller.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.NoResultException;
+import javax.persistence.Table;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.xml.bind.annotation.XmlRootElement;
 import model.Patient;
 import model.Patientdicomidentifier;
 
 /**
  *
- * @author INFO-H-400
+ * @author Adrien Foucart
  */
+@Entity
+@Table(name = "patientdicomidentifier")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Patientdicomidentifier.findAll", query = "SELECT p FROM Patientdicomidentifier p"),
+    @NamedQuery(name = "Patientdicomidentifier.findByIdPatientDicomIdentifier", query = "SELECT p FROM Patientdicomidentifier p WHERE p.idPatientDicomIdentifier = :idPatientDicomIdentifier"),
+    @NamedQuery(name = "Patientdicomidentifier.findByDicomIdentifier", query = "SELECT p FROM Patientdicomidentifier p WHERE p.dicomIdentifier = :dicomIdentifier")})
+
 public class PatientdicomidentifierJpaController implements Serializable {
 
     public PatientdicomidentifierJpaController(EntityManagerFactory emf) {
@@ -164,5 +179,22 @@ public class PatientdicomidentifierJpaController implements Serializable {
             em.close();
         }
     }
+    
+    
+        public Patientdicomidentifier findPatientdicomidentifierByDicomIdentifier(String dicomIdentifier){
+        EntityManager em = getEntityManager();
+        Patientdicomidentifier p = null;
+        try {
+            TypedQuery<Patientdicomidentifier> q = em.createNamedQuery("Patientdicomidentifier.findByDicomIdentifier", Patientdicomidentifier.class);
+            p = q.setParameter("dicomIdentifier", dicomIdentifier).getSingleResult();
+        } catch(NoResultException ex){
+            return null;
+        } 
+        finally {
+            em.close();
+        }
+        return p;
+    }
+    
     
 }

@@ -12,6 +12,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import model.Instance;
@@ -163,6 +165,21 @@ public class InstanceJpaController implements Serializable {
         } finally {
             em.close();
         }
+    }
+    
+        public Instance findInstanceByUid(String instanceUid) {
+        EntityManager em = getEntityManager();
+        Instance instance = null;
+        try {
+            TypedQuery<Instance> q = em.createNamedQuery("Instance.findByUid", Instance.class);
+            instance = q.setParameter("uid", instanceUid).getSingleResult();
+        } catch(NoResultException ex){
+            return null;
+        } 
+        finally {
+            em.close();
+        }
+        return instance;
     }
     
 }
