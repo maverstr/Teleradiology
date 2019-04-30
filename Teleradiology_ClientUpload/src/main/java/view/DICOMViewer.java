@@ -24,6 +24,10 @@ import javax.swing.JFileChooser;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import model.Patient;
+import controller.PatientJpaController;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import view.PersonListModel;
 
 /**
  *
@@ -34,6 +38,9 @@ public class DICOMViewer extends javax.swing.JFrame {
     ArrayList<Patient> patientsSearchResult = new ArrayList();
     File dicomdirPath;
     TreeModel dicomdir = new DefaultTreeModel(null);
+    private final EntityManagerFactory emfac = Persistence.createEntityManagerFactory("Teleradiology");
+    private final PatientJpaController patientController = new PatientJpaController(emfac);
+    private PersonListModel<Patient> patientModel = null;
     
     /**
      * Creates new form DICOMViewer
@@ -63,6 +70,7 @@ public class DICOMViewer extends javax.swing.JFrame {
         ImageLabel = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         receivedUIDList = new javax.swing.JList<>();
+        SelectDicomdir = new javax.swing.JButton();
 
         jScrollPane2.setViewportView(dicomAttributesTextPane);
 
@@ -97,6 +105,13 @@ public class DICOMViewer extends javax.swing.JFrame {
 
         jScrollPane3.setViewportView(receivedUIDList);
 
+        SelectDicomdir.setText("Select DICOMDIR");
+        SelectDicomdir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SelectDicomdirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -104,24 +119,26 @@ public class DICOMViewer extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(PatientNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34)
-                        .addComponent(doCFindButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(SelectDicomdir)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(34, 34, 34)
+                                .addComponent(doCFindButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(dicomImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 570, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(dicomImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(63, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
                         .addComponent(moveSelectedStudyButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(ImageLabel)
@@ -131,21 +148,21 @@ public class DICOMViewer extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(PatientNameLabel)
                             .addComponent(doCFindButton1)
                             .addComponent(moveSelectedStudyButton1))
-                        .addGap(36, 36, 36))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(ImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(SelectDicomdir))
+                    .addComponent(ImageLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
                     .addComponent(jScrollPane3)
-                    .addComponent(dicomImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE))
+                    .addComponent(dicomImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -176,14 +193,18 @@ public class DICOMViewer extends javax.swing.JFrame {
 
     private void doCFindButton1doCFindButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doCFindButton1doCFindButtonActionPerformed
         // TODO add your handling code here:
+        System.out.println("Find appelé");
         String searchPatientName = dcmPatientNameField.getText();
         ArrayList<String> receivedStudyInstanceUIDs = scu.doFindScu(searchPatientName);
         if( receivedStudyInstanceUIDs != null ){
-            DefaultListModel<String> receivedListModel = new DefaultListModel();
+            System.out.println("Trouvé!");
+            //DefaultListModel<String> receivedListModel = new DefaultListModel();
             for( String uid : receivedStudyInstanceUIDs )
-                receivedListModel.addElement(uid);
-            
-            receivedUIDList.setModel(receivedListModel);
+                //receivedListModel.addElement(uid);
+                patientModel = new PersonListModel(patientController.findPatientEntities());
+                System.out.println("1");
+                receivedUIDList.setModel(patientModel);
+                System.out.println("2");
         }
         else{
             System.out.println("rien trouvé");
@@ -195,7 +216,35 @@ public class DICOMViewer extends javax.swing.JFrame {
         String selectedUID = receivedUIDList.getSelectedValue();
         scu.doMoveScu(selectedUID);
     }//GEN-LAST:event_moveSelectedStudyButton1moveSelectedStudyButtonActionPerformed
+
+    private void SelectDicomdirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectDicomdirActionPerformed
+        // TODO add your handling code here:
+        JFileChooser jfc = new JFileChooser("D:\\Users\\INFO-H-400\\Downloads\\DICOMDIR\\DICOMDIR");
+        
+        if( jfc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION ){
+            DicomInputStream dis = null;
+            try {
+                dicomdirPath = jfc.getSelectedFile();
+                System.out.println(dicomdirPath.getAbsolutePath());
+                dis = new DicomInputStream(dicomdirPath);
+                AttributeList al = new AttributeList();
+                al.read(dis);
+                dicomdir = new DicomDirectory(al);
+                dicomdirTree.setModel(dicomdir);
+            } catch (IOException | DicomException ex) {
+                Logger.getLogger(DICOMViewer.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    dis.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(DICOMViewer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        }
+    }//GEN-LAST:event_SelectDicomdirActionPerformed
 public static void main(String args[]) {
+    System.out.println("main appelé");
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -229,6 +278,7 @@ public static void main(String args[]) {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ImageLabel;
     private javax.swing.JLabel PatientNameLabel;
+    private javax.swing.JButton SelectDicomdir;
     private javax.swing.JTextField dcmPatientNameField;
     private javax.swing.JTextPane dicomAttributesTextPane;
     private javax.swing.JLabel dicomImageLabel;

@@ -52,7 +52,6 @@ public class ClientUpload {
         try {
             SpecificCharacterSet specificCharacterSet = new SpecificCharacterSet((String[])null);
             AttributeList identifier = new AttributeList();
-            
             FindScuIdentifierHandler handler = new FindScuIdentifierHandler();
             
             //specify attributes to retrieve and pass in any search criteria
