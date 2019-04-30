@@ -120,6 +120,7 @@ public class DICOMServer {
         public void performQuery(String affectedSOPClassUID, AttributeList al, boolean bln) {
             System.out.println(affectedSOPClassUID);
             System.out.println(al);
+            
         }
 
         @Override
