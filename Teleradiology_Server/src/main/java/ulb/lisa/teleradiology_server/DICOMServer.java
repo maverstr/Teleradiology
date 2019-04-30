@@ -8,17 +8,22 @@ import com.mysql.jdbc.PreparedStatement;
 import com.pixelmed.dicom.Attribute;
 import com.pixelmed.dicom.AttributeList;
 import com.pixelmed.dicom.AttributeTag;
+import com.pixelmed.dicom.AttributeTagAttribute;
 import com.pixelmed.dicom.CodeStringAttribute;
 
 import com.pixelmed.dicom.DicomException;
+import com.pixelmed.dicom.PersonNameAttribute;
 import com.pixelmed.dicom.StoredFilePathStrategy;
 import com.pixelmed.dicom.TagFromName;
 import com.pixelmed.dicom.UniqueIdentifierAttribute;
-import com.pixelmed.network.*;
 import com.pixelmed.network.DicomNetworkException;
+import com.pixelmed.network.NetworkApplicationInformation;
 import com.pixelmed.network.ReceivedObjectHandler;
 import com.pixelmed.network.StorageSOPClassSCPDispatcher;
+import com.pixelmed.query.QueryResponseGenerator;
 import com.pixelmed.query.QueryResponseGeneratorFactory;
+import com.pixelmed.query.RetrieveResponseGenerator;
+import com.pixelmed.query.RetrieveResponseGeneratorFactory;
 import controller.ImagingstudyJpaController;
 import controller.InstanceJpaController;
 import controller.PatientJpaController;
@@ -34,6 +39,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import model.Imagingstudy;
@@ -73,23 +80,105 @@ public class DICOMServer {
     }
     
    private void startServer(int port, String aetitle, File storePath, StoredFilePathStrategy sfps) throws IOException{
+       NetworkApplicationInformation nai = new NetworkApplicationInformation();
+        try {
+            nai.add("LOCAL_STORESCP", "STORESCP", "localhost", 11113, null, null);
+        } catch (DicomNetworkException ex) {
+            Logger.getLogger(DICOMServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
        Thread t = new Thread(
                new StorageSOPClassSCPDispatcher(
                        port,
                        aetitle,
                        storePath,
                        StoredFilePathStrategy.BYSOPINSTANCEUIDINSINGLEFOLDER,
-                       new StoreObjectHandler(),
-                       QueryResponseGeneratorFactory queryResponseGeneratorFactory,
-                       RetrieveResponseGeneratorFactory retrieveResponseGeneratorFactory,
-                       NetworkApplicationInformation networkApplicationInformation,
-                       boolean secureTranspor
-                       )
+                       new StoreObjectHandler(),  new QueryResponseGeneratorFactoryHandler(), new RetrieveResponseHandler(), nai, false)
                
        );
        System.out.println("server started");
        t.start();
 
+    }
+   
+    private class QueryResponseHandler implements QueryResponseGenerator {
+        private final EntityManagerFactory emfac = Persistence.createEntityManagerFactory("Teleradiology");
+        private final PatientJpaController patientController = new PatientJpaController(emfac);
+        private final PatientdicomidentifierJpaController pdiCtrl = new PatientdicomidentifierJpaController(emfac);
+        private final PractitionerdicomidentifierJpaController prapdiCtrl = new PractitionerdicomidentifierJpaController(emfac);
+        private final PatientJpaController patientCtrl = new PatientJpaController(emfac);
+        private final PersonJpaController personCtrl = new PersonJpaController(emfac);
+        private final PractitionerdicomidentifierJpaController praCtrl = new PractitionerdicomidentifierJpaController(emfac);
+        private final ImagingstudyJpaController studyCtrl = new ImagingstudyJpaController(emfac);
+        private final SeriesJpaController seriesCtrl = new SeriesJpaController(emfac);
+        private final InstanceJpaController instanceCtrl = new InstanceJpaController(emfac);
+        
+        
+        boolean stop = false;
+        
+        @Override
+        public void performQuery(String affectedSOPClassUID, AttributeList al, boolean bln) {
+            System.out.println(affectedSOPClassUID);
+            System.out.println(al);
+        }
+
+        @Override
+        public AttributeList next() {
+            if( stop ) return null;
+            AttributeList al = new AttributeList();
+            try
+                {AttributeTag t = TagFromName.PatientName; Attribute a = new PersonNameAttribute(t); a.addValue("Test test"); al.put(TagFromName.PatientName, a);}
+            catch( DicomException ex ){
+                Logger.getLogger(DICOMServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            stop = true;
+            return al;
+        }
+
+        @Override
+        public int getStatus() {
+            return 0;
+        }
+
+        @Override
+        public AttributeTagAttribute getOffendingElement() {
+            return null;
+        }
+
+        @Override
+        public String getErrorComment() {
+            return null;
+        }
+
+        @Override
+        public void close() {
+            stop = false;
+        }
+
+        @Override
+        public boolean allOptionalKeysSuppliedWereSupported() {
+            return true;
+        }
+        
+    }
+    
+    private class QueryResponseGeneratorFactoryHandler implements QueryResponseGeneratorFactory {
+
+        @Override
+        public QueryResponseHandler newInstance() {
+            return new QueryResponseHandler();
+        }
+        
+    }
+    
+    private class RetrieveResponseHandler implements RetrieveResponseGeneratorFactory {
+
+        @Override
+        public RetrieveResponseGenerator newInstance() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
     }
 
     private class StoreObjectHandler extends ReceivedObjectHandler {
