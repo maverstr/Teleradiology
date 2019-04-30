@@ -14,9 +14,11 @@ import com.pixelmed.dicom.DicomException;
 import com.pixelmed.dicom.StoredFilePathStrategy;
 import com.pixelmed.dicom.TagFromName;
 import com.pixelmed.dicom.UniqueIdentifierAttribute;
+import com.pixelmed.network.*;
 import com.pixelmed.network.DicomNetworkException;
 import com.pixelmed.network.ReceivedObjectHandler;
 import com.pixelmed.network.StorageSOPClassSCPDispatcher;
+import com.pixelmed.query.QueryResponseGeneratorFactory;
 import controller.ImagingstudyJpaController;
 import controller.InstanceJpaController;
 import controller.PatientJpaController;
@@ -77,7 +79,12 @@ public class DICOMServer {
                        aetitle,
                        storePath,
                        StoredFilePathStrategy.BYSOPINSTANCEUIDINSINGLEFOLDER,
-                       new StoreObjectHandler())
+                       new StoreObjectHandler(),
+                       QueryResponseGeneratorFactory queryResponseGeneratorFactory,
+                       RetrieveResponseGeneratorFactory retrieveResponseGeneratorFactory,
+                       NetworkApplicationInformation networkApplicationInformation,
+                       boolean secureTranspor
+                       )
                
        );
        System.out.println("server started");
