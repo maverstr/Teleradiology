@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package ulb.lisa.teleradiology_server;
-import ca.uhn.hl7v2.app.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import com.pixelmed.dicom.Attribute;
 import com.pixelmed.dicom.AttributeList;
@@ -27,6 +26,7 @@ import controller.PractitionerdicomidentifierJpaController;
 import controller.SeriesJpaController;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -49,15 +49,14 @@ import model.Series;
 public class DICOMServer {
 
     public static void main(String args[]) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
-        System.out.println("in main Server");
-
+        //connecting to DB
         String driver = "com.mysql.jdbc.Driver";
         String userName = "student";
         String password = "1234";
         String url = "jdbc:mysql://192.168.3.109/teleradiology";
         Connection conn = null;
         Class.forName(driver).newInstance();
-        conn = (Connection) DriverManager.getConnection(url, userName, password);
+        conn = DriverManager.getConnection(url, userName, password);
         System.out.println("Connected to the database.");
 
         
@@ -67,6 +66,7 @@ public class DICOMServer {
     }
     
     public DICOMServer() throws IOException{
+        //Starting server
         startServer(443, "STORESCP109",new File("D:\\Users\\INFO-H-400\\Documents"), null);
     }
     
@@ -110,12 +110,10 @@ public class DICOMServer {
        
             //retrieve info
             String patientName = getTag(al, TagFromName.PatientName);
-
-            
             String patientID = getTag(al, TagFromName.PatientID);
-            System.out.println("value type");
             String patientSex = getTag(al, TagFromName.PatientSex);
             String patientBirthdate = getTag(al, TagFromName.PatientBirthDate);
+            String hospitalID = getTag(al, TagFromName.InstitutionName);
             String studyUID = getTag(al, TagFromName.StudyInstanceUID);
             String studyDescription = getTag(al, TagFromName.StudyDescription);
             String seriesUID = getTag(al, TagFromName.SeriesInstanceUID);
@@ -129,12 +127,15 @@ public class DICOMServer {
             
             Patientdicomidentifier pdi = pdiCtrl.findPatientdicomidentifierByDicomIdentifier(patientID);
             Patient pat = null;
+
             if(pdi == null){
                 pat = new Patient();
                 pat.setActive(true);
                 Person per = new Person();
                 per.setNameFamily(patientName);
                 per.setGender(patientSex);
+                per.setHospitalid(hospitalID);
+                System.out.println("hospital : "+hospitalID);
                 SimpleDateFormat fmt = new SimpleDateFormat("yyyymmdd");
                 try{
                     per.setBirthdate(fmt.parse(patientBirthdate));
@@ -143,7 +144,7 @@ public class DICOMServer {
                 pdi = new Patientdicomidentifier();
                 pdi.setPatient(pat);
                 pdi.setDicomIdentifier(patientID);
-                pdi.setPerson(per);
+                pat.setPerson(per);
                 personCtrl.create(per);
                 patientCtrl.create(pat);
                 pdiCtrl.create(pdi);            
@@ -151,7 +152,6 @@ public class DICOMServer {
             else{
             pat = pdi.getPatient();
             }
-            
             Imagingstudy study = studyCtrl.findImagingstudyByUid(studyUID);
             if(study == null){
                 study = new Imagingstudy();;
@@ -170,7 +170,6 @@ public class DICOMServer {
                 series.setStudy(study);
                 seriesCtrl.create(series);
         }
-            
             Instance instance = instanceCtrl.findInstanceByUid(instanceUID);
             if (instance == null) {
                 instance = new Instance();
@@ -179,7 +178,7 @@ public class DICOMServer {
                 instanceCtrl.create(instance);
             }
 
-                   
+            System.out.println("endinggggg");
     }
 
 

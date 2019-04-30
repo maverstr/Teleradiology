@@ -106,9 +106,6 @@ public class Patientdicomidentifier implements Serializable {
         return "model.Patientdicomidentifier[ idPatientDicomIdentifier=" + idPatientDicomIdentifier + " ]";
     }
 
-    public void setPerson(Person per) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     
 }
