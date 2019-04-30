@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package ulb.lisa.teleradiology_server;
+import ca.uhn.hl7v2.app.Connection;
+import com.mysql.jdbc.PreparedStatement;
 import com.pixelmed.dicom.Attribute;
 import com.pixelmed.dicom.AttributeList;
 import com.pixelmed.dicom.AttributeTag;
@@ -25,12 +27,16 @@ import controller.PractitionerdicomidentifierJpaController;
 import controller.SeriesJpaController;
 import java.io.File;
 import java.io.IOException;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import model.Imagingstudy;
 import model.Instance;
+import static model.Medicalstaff_.person;
 import model.Patient;
 import model.Patientdicomidentifier;
 import model.Person;
@@ -42,9 +48,19 @@ import model.Series;
  */
 public class DICOMServer {
 
-    
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
         System.out.println("in main Server");
+
+        String driver = "com.mysql.jdbc.Driver";
+        String userName = "student";
+        String password = "1234";
+        String url = "jdbc:mysql://192.168.3.109/teleradiology";
+        Connection conn = null;
+        Class.forName(driver).newInstance();
+        conn = (Connection) DriverManager.getConnection(url, userName, password);
+        System.out.println("Connected to the database.");
+
+        
         DICOMServer dicomServ = new DICOMServer();
 
         
@@ -86,15 +102,18 @@ public class DICOMServer {
         @Override
         public void sendReceivedObjectIndication(String dcmFilename, String transferSyntax, String callingAET) throws DicomNetworkException, DicomException,
                 IOException {
-            
+            System.out.println(dcmFilename + "    " + callingAET);
+
             AttributeList al = new AttributeList();
             al.read(dcmFilename);
-
             
+       
             //retrieve info
             String patientName = getTag(al, TagFromName.PatientName);
+
+            
             String patientID = getTag(al, TagFromName.PatientID);
-            int patientIDint = Integer.parseInt(patientID);
+            System.out.println("value type");
             String patientSex = getTag(al, TagFromName.PatientSex);
             String patientBirthdate = getTag(al, TagFromName.PatientBirthDate);
             String studyUID = getTag(al, TagFromName.StudyInstanceUID);
@@ -103,14 +122,12 @@ public class DICOMServer {
             String seriesModality = getTag(al, TagFromName.Modality);
             String seriesDescription = getTag(al, TagFromName.SeriesDescription);
             String instanceUID = getTag(al, TagFromName.SOPInstanceUID);
-            int instanceUIDint = Integer.parseInt(instanceUID);
-            
             String test= getTag(al, TagFromName.ValueType);
            
             System.out.println("value type"+test);
 
             
-            Patientdicomidentifier pdi = pdiCtrl.findPatientdicomidentifier(patientIDint);
+            Patientdicomidentifier pdi = pdiCtrl.findPatientdicomidentifierByDicomIdentifier(patientID);
             Patient pat = null;
             if(pdi == null){
                 pat = new Patient();
@@ -126,7 +143,7 @@ public class DICOMServer {
                 pdi = new Patientdicomidentifier();
                 pdi.setPatient(pat);
                 pdi.setDicomIdentifier(patientID);
-                //pdi.setPerson(per);
+                pdi.setPerson(per);
                 personCtrl.create(per);
                 patientCtrl.create(pat);
                 pdiCtrl.create(pdi);            
@@ -154,7 +171,7 @@ public class DICOMServer {
                 seriesCtrl.create(series);
         }
             
-            Instance instance = instanceCtrl.findInstance(instanceUIDint);
+            Instance instance = instanceCtrl.findInstanceByUid(instanceUID);
             if (instance == null) {
                 instance = new Instance();
                 instance.setUid(studyUID);
