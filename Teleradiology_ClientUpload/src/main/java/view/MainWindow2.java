@@ -15,7 +15,7 @@ import model.Person;
  *
  * @author Adrien Foucart
  */
-public class MainWindow extends javax.swing.JFrame {
+public class MainWindow2 extends javax.swing.JFrame {
     
     ClientUpload scu = new ClientUpload();
     ArrayList<Patient> patientsSearchResult = new ArrayList();
@@ -23,7 +23,7 @@ public class MainWindow extends javax.swing.JFrame {
     /**
      * Creates new form MainWindow
      */
-    public MainWindow() {
+    public MainWindow2() {
         initComponents();
     }
 
@@ -45,13 +45,13 @@ public class MainWindow extends javax.swing.JFrame {
         hl7HostTextField = new javax.swing.JTextField();
         hl7PortTextField = new javax.swing.JTextField();
         personForm = new view.CreatePersonForm();
-        jPanel1 = new javax.swing.JPanel();
-        dcmPatientNameField = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        doCFindButton = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        receivedUIDList = new javax.swing.JList<>();
-        moveSelectedStudyButton = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        dcmPatientNameField1 = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        doCFindButton1 = new javax.swing.JButton();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        receivedUIDList1 = new javax.swing.JList<>();
+        moveSelectedStudyButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         fhirServerHost = new javax.swing.JTextField();
         patientFhirSearchField = new javax.swing.JTextField();
@@ -115,60 +115,60 @@ public class MainWindow extends javax.swing.JFrame {
 
         fhirPane.addTab("Patient", patientPanel);
 
-        jLabel1.setText("Patient Name");
+        jLabel3.setText("Patient Name");
 
-        doCFindButton.setText("C-FIND");
-        doCFindButton.addActionListener(new java.awt.event.ActionListener() {
+        doCFindButton1.setText("C-FIND");
+        doCFindButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 doCFindButtonActionPerformed(evt);
             }
         });
 
-        jScrollPane1.setViewportView(receivedUIDList);
+        jScrollPane5.setViewportView(receivedUIDList1);
 
-        moveSelectedStudyButton.setText("C-MOVE");
-        moveSelectedStudyButton.addActionListener(new java.awt.event.ActionListener() {
+        moveSelectedStudyButton1.setText("C-MOVE");
+        moveSelectedStudyButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 moveSelectedStudyButtonActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(dcmPatientNameField1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(moveSelectedStudyButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(doCFindButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(moveSelectedStudyButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(doCFindButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(200, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(doCFindButton))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(dcmPatientNameField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(doCFindButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(moveSelectedStudyButton)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(moveSelectedStudyButton1)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
-        fhirPane.addTab("PACS", jPanel1);
+        fhirPane.addTab("PACS", jPanel3);
 
         fhirServerHost.setText("http://fhirtest.uhn.ca/baseDstu3");
         fhirServerHost.addActionListener(new java.awt.event.ActionListener() {
@@ -251,48 +251,29 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void sendADTButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendADTButtonActionPerformed
-        Person per = personForm.getPerson();
-        Patient p = new Patient();
-        p.setPerson(per);
-        
-        String host = hl7HostTextField.getText();
-        int port = Integer.valueOf(hl7PortTextField.getText());
-
-    }//GEN-LAST:event_sendADTButtonActionPerformed
-
-    private void doCFindButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doCFindButtonActionPerformed
-        String searchPatientName = dcmPatientNameField.getText();
-        ArrayList<String> receivedStudyInstanceUIDs = scu.doFindScu(searchPatientName);
-        if( receivedStudyInstanceUIDs != null ){
-            DefaultListModel<String> receivedListModel = new DefaultListModel();
-            for( String uid : receivedStudyInstanceUIDs )
-                receivedListModel.addElement(uid);
-            
-            receivedUIDList.setModel(receivedListModel);
-        }
-        else{
-            System.out.println("Pas trouvé");
-        }
-    }//GEN-LAST:event_doCFindButtonActionPerformed
-
-    private void moveSelectedStudyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveSelectedStudyButtonActionPerformed
-        String selectedUID = receivedUIDList.getSelectedValue();
-        
-        scu.doMoveScu(selectedUID);
-    }//GEN-LAST:event_moveSelectedStudyButtonActionPerformed
-
-    private void fhirSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fhirSearchButtonActionPerformed
-        // TO DO
-    }//GEN-LAST:event_fhirSearchButtonActionPerformed
-
     private void fhirSearchResultListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_fhirSearchResultListValueChanged
-        // TO DO
+        // TODO add your handling code here:
     }//GEN-LAST:event_fhirSearchResultListValueChanged
 
+    private void fhirSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fhirSearchButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fhirSearchButtonActionPerformed
+
     private void fhirServerHostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fhirServerHostActionPerformed
-        // TODO add your handling code here
+        // TODO add your handling code here:
     }//GEN-LAST:event_fhirServerHostActionPerformed
+
+    private void moveSelectedStudyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveSelectedStudyButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_moveSelectedStudyButtonActionPerformed
+
+    private void doCFindButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doCFindButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_doCFindButtonActionPerformed
+
+    private void sendADTButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendADTButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sendADTButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -311,20 +292,21 @@ public class MainWindow extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindow2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindow2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindow2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindow2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainWindow().setVisible(true);
+                new MainWindow2().setVisible(true);
             }
         });
     }
@@ -332,7 +314,9 @@ public class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel adtRspLabel;
     private javax.swing.JTextField dcmPatientNameField;
+    private javax.swing.JTextField dcmPatientNameField1;
     private javax.swing.JButton doCFindButton;
+    private javax.swing.JButton doCFindButton1;
     private javax.swing.JTabbedPane fhirPane;
     private javax.swing.JTextArea fhirResultDetailTextArea;
     private javax.swing.JButton fhirSearchButton;
@@ -342,18 +326,23 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JTextField hl7PortTextField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JButton moveSelectedStudyButton;
+    private javax.swing.JButton moveSelectedStudyButton1;
     private javax.swing.JTextField patientFhirSearchField;
     private javax.swing.JPanel patientPanel;
     private view.CreatePersonForm personForm;
     private javax.swing.JList<String> receivedUIDList;
+    private javax.swing.JList<String> receivedUIDList1;
     private javax.swing.JButton sendADTButton;
     // End of variables declaration//GEN-END:variables
 }
