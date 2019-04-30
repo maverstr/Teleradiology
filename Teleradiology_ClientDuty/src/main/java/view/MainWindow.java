@@ -175,9 +175,8 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void moveSelectedStudyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveSelectedStudyButtonActionPerformed
-        String selectedUID = receivedUIDList.getSelectedValue();
-
-        scu.doMoveScu(selectedUID);
+        //String selectedUID = receivedUIDList.getSelectedValue();
+        //scu.doMoveScu(selectedUID);
     }//GEN-LAST:event_moveSelectedStudyButtonActionPerformed
 
     private void sendADTButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendADTButtonActionPerformed
@@ -199,14 +198,19 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         // TODO : récupérer les dossiers non traités sur le serveur
-        ArrayList<String> receivedStudyInstanceUIDs = scu.doFindScu("*");
-        if( receivedStudyInstanceUIDs != null ){
+         scu.doMoveScu("*"); //ATTENTION vérifier qu'on sait récup les infos
+         
+        /*ArrayList<String> receivedStudyInstanceUIDs = doFindScu(azaz.getText)
+        
+        //AFFFICHAGE DES PATIENTS RECUPERES DANS LA DATABASE
+        
+        /*if( receivedStudyInstanceUIDs != null ){
             DefaultListModel<String> receivedListModel = new DefaultListModel();
             for( String uid : receivedStudyInstanceUIDs ){
                 receivedListModel.addElement(uid);
             }
             receivedUIDList.setModel(receivedListModel);
-        }
+        }*/
     }//GEN-LAST:event_refreshButtonActionPerformed
 
     private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportButtonActionPerformed
@@ -214,7 +218,7 @@ public class MainWindow extends javax.swing.JFrame {
         //ce rapport
         WriteReport reportWindow = new WriteReport();
         reportWindow.setVisible(true);
-        //Report report = new Report();
+        //Report report = new Report(); TO DO, récupérer la liste des attributs pour pouvoir construire le report
         
     }//GEN-LAST:event_reportButtonActionPerformed
 
