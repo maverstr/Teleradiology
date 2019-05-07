@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import view.MainWindow2;
+import view.DICOMViewer;
 
 /**
  *
@@ -33,7 +33,7 @@ public class ClientUpload {
     
     private class FindScuIdentifierHandler extends IdentifierHandler {
         
-        public ArrayList<String> receivedStudyInstanceUIDs = new ArrayList();
+        public ArrayList<String> receivedPatientName = new ArrayList();
         
         @Override
         public void doSomethingWithIdentifier(AttributeList identifier) throws DicomException {
@@ -43,7 +43,7 @@ public class ClientUpload {
                 System.out.println(tag.toString() + " :: " + identifier.get(tag).getSingleStringValueOrEmptyString());
             }
             
-            receivedStudyInstanceUIDs.add(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString());
+            receivedPatientName.add(identifier.get(TagFromName.PatientName).getSingleStringValueOrEmptyString());
         }
         
     }
@@ -75,10 +75,10 @@ public class ClientUpload {
                     SOPClass.StudyRootQueryRetrieveInformationModelFind,
                     identifier,
                     handler);
-                return handler.receivedStudyInstanceUIDs;
+                return handler.receivedPatientName;
         
         } catch (DicomException | DicomNetworkException | IOException ex) {
-            Logger.getLogger(MainWindow2.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DICOMViewer.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return null;
