@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import model.Patient;
@@ -40,6 +41,7 @@ public class MainWindow extends javax.swing.JFrame {
     File dicomdirPath;
     TreeModel dicomdir = new DefaultTreeModel(null);
     ArrayList<Patient> patientsSearchResult = new ArrayList();
+    AttributeList al = null;
     
     /**
      * Creates new form MainWindow
@@ -148,6 +150,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        dicomdirTree.setModel(null);
         dicomdirTree.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
                 dicomdirTreeValueChanged(evt);
@@ -240,9 +243,15 @@ public class MainWindow extends javax.swing.JFrame {
     private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportButtonActionPerformed
         // TODO : créer un DICOM SR et ouvrir une fentre pop-up pour modifier
         //ce rapport
-        WriteReport reportWindow = new WriteReport();
-        reportWindow.setVisible(true);
-        //Report report = new Report(); TO DO, récupérer la liste des attributs pour pouvoir construire le report
+        // TO DO : public boolean isSRDocument() --> fct pour tester attribute list
+        if (al == null){
+            JOptionPane.showMessageDialog(null,"Vous n'avez pas sélectionner de fichier DICOM" );
+        }
+        else{
+            WriteReport reportWindow = new WriteReport(al);
+            reportWindow.setVisible(true);
+        }
+        //Report report = new Report(al); //TO DO, récupérer la liste des attributs pour pouvoir construire le report
 
     }//GEN-LAST:event_reportButtonActionPerformed
 
@@ -277,9 +286,9 @@ public class MainWindow extends javax.swing.JFrame {
                 dicomdirPath = jfc.getSelectedFile();
                 System.out.println(dicomdirPath.getAbsolutePath());
                 dis = new DicomInputStream(dicomdirPath);
-                AttributeList al = new AttributeList();
-                al.read(dis);
-                dicomdir = new DicomDirectory(al);
+                AttributeList alist = new AttributeList();
+                alist.read(dis);
+                dicomdir = new DicomDirectory(alist);
                 dicomdirTree.setModel(dicomdir);
             } catch (IOException | DicomException ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -297,14 +306,13 @@ public class MainWindow extends javax.swing.JFrame {
     private void dicomdirTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_dicomdirTreeValueChanged
         Object selectedObject = dicomdirTree.getLastSelectedPathComponent();
         DicomDirectoryRecord ddr = (DicomDirectoryRecord) selectedObject;
-        AttributeList al = ddr.getAttributeList();
+        al = ddr.getAttributeList();
         //dicomImageTextPane1.setText(al.toString());
         
         if( al.get(TagFromName.DirectoryRecordType).getSingleStringValueOrEmptyString().equals("IMAGE") ){
             try {
                 String imagePath = al.get(TagFromName.ReferencedFileID).getDelimitedStringValuesOrEmptyString();
                 File imageFile = new File(dicomdirPath.getParent(), imagePath);
-                
                 System.out.println(imagePath);
                 System.out.println(imageFile.getAbsolutePath());
                 SourceImage sImg = new SourceImage(imageFile.getAbsolutePath()); // path = path to the DICOM file containing the image data. Note that the DICOMDIR doesn't have the image data!

@@ -18,7 +18,10 @@ public class Report extends StructuredReport{
 
     public Report(AttributeList al) throws DicomException { //choisir la methode pour construire un nouveau rapport
         super(al);
-        System.out.println("Un nouveau dicom SR a été créé sur base d'une liste d'attributs");
+        System.out.println("Un nouveau dicom SR a été créé sur base d'une liste d'attributs \n");
+        System.out.println(al.toString());
+        //System.out.println("Ce rapport possède la liste d'attributs suivante \n");
+        //System.out.println(this.getAttributeList().toString()); (ca ne marche pas)
     }
     
     

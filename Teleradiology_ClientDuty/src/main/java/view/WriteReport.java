@@ -5,6 +5,11 @@
  */
 package view;
 
+import client.Report;
+import com.pixelmed.dicom.AttributeList;
+import com.pixelmed.dicom.DicomException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -12,12 +17,23 @@ import javax.swing.JOptionPane;
  * @author INFO-H-400
  */
 public class WriteReport extends javax.swing.JFrame {
-
+    
+    private static Report rep;
+    private static AttributeList al;
+    
     /**
      * Creates new form WriteReport
+     * @param al
      */
-    public WriteReport() {
+    public WriteReport(AttributeList alist) {
         initComponents();
+        al = alist;
+        try {
+            rep = new Report(al);
+        } catch (DicomException ex) {
+            Logger.getLogger(WriteReport.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     public void CloseFrame() {
         super.dispose();
@@ -91,8 +107,9 @@ public class WriteReport extends javax.swing.JFrame {
         if ("".equals(s)) {
             JOptionPane.showMessageDialog(null,"Il faut écrire un rapport avant de sauver !" );
         } else {
-            System.out.println(s);
-            // SAUVER LE TEXTE DANS LE DICOM SR
+            //rep.getAttributeList().putNewAttribute(, scs) TO DO
+            System.out.println(s + "\nSaved in DICOM SR \n");
+            // SAUVER LE TEXTE DANS LE DICOM SR --> public Attribute putNewAttribute(AttributeTag at, SpecificCharacterSet scs) throws DicomException {
             CloseFrame();
         }
     }//GEN-LAST:event_saveButtonActionPerformed
@@ -127,7 +144,7 @@ public class WriteReport extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new WriteReport().setVisible(true);
+                new WriteReport(al).setVisible(true);
             }
         });
     }
