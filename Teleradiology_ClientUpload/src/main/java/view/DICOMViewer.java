@@ -194,17 +194,19 @@ public class DICOMViewer extends javax.swing.JFrame {
     private void doCFindButton1doCFindButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doCFindButton1doCFindButtonActionPerformed
         // TODO add your handling code here:
         System.out.println("Find appelé");
-        String searchPatientName = dcmPatientNameField.getText();
-        ArrayList<String> receivedStudyInstanceUIDs = scu.doFindScu(searchPatientName);
+        String searchStudyUID = dcmPatientNameField.getText();
+        ArrayList<String> receivedStudyInstanceUIDs = scu.doFindScu(searchStudyUID);
         if( receivedStudyInstanceUIDs != null ){
             System.out.println("Trouvé!");
-            //DefaultListModel<String> receivedListModel = new DefaultListModel();
+            DefaultListModel<String> receivedListModel = new DefaultListModel();
             for( String uid : receivedStudyInstanceUIDs )
-                //receivedListModel.addElement(uid);
-                patientModel = new PersonListModel(patientController.findPatientEntities());
-                System.out.println("1");
-                receivedUIDList.setModel(patientModel);
+                receivedListModel.addElement(uid);
+                System.out.println("000");
+                /*patientModel = new PersonListModel(patientController.findPatientEntities());
+                System.out.println("1");*/
+                receivedUIDList.setModel(receivedListModel);
                 System.out.println("2");
+ 
         }
         else{
             System.out.println("rien trouvé");
@@ -215,6 +217,7 @@ public class DICOMViewer extends javax.swing.JFrame {
         // TODO add your handling code here:
         String selectedUID = receivedUIDList.getSelectedValue();
         scu.doMoveScu(selectedUID);
+        System.out.println("J'ai bougé vers ORthanc");
     }//GEN-LAST:event_moveSelectedStudyButton1moveSelectedStudyButtonActionPerformed
 
     private void SelectDicomdirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectDicomdirActionPerformed

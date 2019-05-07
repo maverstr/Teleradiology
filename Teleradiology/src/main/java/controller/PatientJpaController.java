@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import model.Patient;
 import model.Patientdicomidentifier;
 
@@ -296,6 +298,24 @@ public class PatientJpaController implements Serializable {
         try {
             return em.find(Patient.class, id);
         } finally {
+            em.close();
+        }
+    }
+
+    public Patient findPatientByName(String name) {
+        EntityManager em = getEntityManager();
+        try {
+
+            //return em.find(Patient.class, name);
+            
+            //Patient patient = (Patient) em.createNamedQuery("Patient.findByIdPatient").setParameter("idPatient", 4).getSingleResult();
+            Patient patient = (Patient) em.createNamedQuery("Patient.findByName").setParameter("nameGiven", name).getSingleResult(); 
+            return patient;
+        } catch(NoResultException e) {
+            System.out.println("no patient found");
+            return null;
+        }
+        finally{
             em.close();
         }
     }

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import view.MainWindow2;
+import view.DICOMViewer;
 
 /**
  *
@@ -78,7 +78,7 @@ public class ClientUpload {
                 return handler.receivedStudyInstanceUIDs;
         
         } catch (DicomException | DicomNetworkException | IOException ex) {
-            Logger.getLogger(MainWindow2.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DICOMViewer.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return null;
