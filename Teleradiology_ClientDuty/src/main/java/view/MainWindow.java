@@ -9,6 +9,21 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import client.DICOMSCU;
 import client.Report;
+import com.pixelmed.dicom.AttributeList;
+import com.pixelmed.dicom.DicomDirectory;
+import com.pixelmed.dicom.DicomDirectoryRecord;
+import com.pixelmed.dicom.DicomException;
+import com.pixelmed.dicom.DicomInputStream;
+import com.pixelmed.dicom.TagFromName;
+import com.pixelmed.display.SourceImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 import model.Patient;
 import model.Person;
 
@@ -22,6 +37,8 @@ import model.Person;
 public class MainWindow extends javax.swing.JFrame {
     
     DICOMSCU scu = new DICOMSCU();
+    File dicomdirPath;
+    TreeModel dicomdir = new DefaultTreeModel(null);
     ArrayList<Patient> patientsSearchResult = new ArrayList();
     
     /**
@@ -54,6 +71,10 @@ public class MainWindow extends javax.swing.JFrame {
         moveSelectedStudyButton = new javax.swing.JButton();
         refreshButton = new javax.swing.JButton();
         reportButton = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        dicomdirTree = new javax.swing.JTree();
+        dicomImageLabel = new javax.swing.JLabel();
+        SelectDicomdir = new javax.swing.JButton();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -85,7 +106,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(hl7PortTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(adtRspLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(592, Short.MAX_VALUE))
         );
         patientPanelLayout.setVerticalGroup(
             patientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -98,7 +119,7 @@ public class MainWindow extends javax.swing.JFrame {
                             .addComponent(sendADTButton)
                             .addComponent(hl7HostTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(hl7PortTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 212, Short.MAX_VALUE)))
+                        .addGap(0, 539, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -127,34 +148,58 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        dicomdirTree.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                dicomdirTreeValueChanged(evt);
+            }
+        });
+        jScrollPane3.setViewportView(dicomdirTree);
+
+        SelectDicomdir.setText("Select DICOMDIR");
+        SelectDicomdir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SelectDicomdirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(refreshButton))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(refreshButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(moveSelectedStudyButton))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(SelectDicomdir)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(reportButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(moveSelectedStudyButton)
-                    .addComponent(reportButton))
-                .addContainerGap(167, Short.MAX_VALUE))
+                .addComponent(dicomImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(refreshButton)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(refreshButton)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(reportButton)
+                        .addComponent(SelectDicomdir, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(moveSelectedStudyButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(reportButton)
-                        .addGap(15, 15, 15)
-                        .addComponent(moveSelectedStudyButton)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(dicomImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -173,12 +218,8 @@ public class MainWindow extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void moveSelectedStudyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveSelectedStudyButtonActionPerformed
-        //String selectedUID = receivedUIDList.getSelectedValue();
-        //scu.doMoveScu(selectedUID);
-    }//GEN-LAST:event_moveSelectedStudyButtonActionPerformed
-
+ 
+    
     private void sendADTButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendADTButtonActionPerformed
         Person per = personForm.getPerson();
         Patient p = new Patient();
@@ -196,14 +237,23 @@ public class MainWindow extends javax.swing.JFrame {
         */
     }//GEN-LAST:event_sendADTButtonActionPerformed
 
+    private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportButtonActionPerformed
+        // TODO : créer un DICOM SR et ouvrir une fentre pop-up pour modifier
+        //ce rapport
+        WriteReport reportWindow = new WriteReport();
+        reportWindow.setVisible(true);
+        //Report report = new Report(); TO DO, récupérer la liste des attributs pour pouvoir construire le report
+
+    }//GEN-LAST:event_reportButtonActionPerformed
+
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         // TODO : récupérer les dossiers non traités sur le serveur
-         scu.doMoveScu("*"); //ATTENTION vérifier qu'on sait récup les infos
-         
+        scu.doMoveScu("*"); //ATTENTION vérifier qu'on sait récup les infos
+
         /*ArrayList<String> receivedStudyInstanceUIDs = doFindScu(azaz.getText)
-        
+
         //AFFFICHAGE DES PATIENTS RECUPERES DANS LA DATABASE
-        
+
         /*if( receivedStudyInstanceUIDs != null ){
             DefaultListModel<String> receivedListModel = new DefaultListModel();
             for( String uid : receivedStudyInstanceUIDs ){
@@ -213,14 +263,58 @@ public class MainWindow extends javax.swing.JFrame {
         }*/
     }//GEN-LAST:event_refreshButtonActionPerformed
 
-    private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportButtonActionPerformed
-        // TODO : créer un DICOM SR et ouvrir une fentre pop-up pour modifier
-        //ce rapport
-        WriteReport reportWindow = new WriteReport();
-        reportWindow.setVisible(true);
-        //Report report = new Report(); TO DO, récupérer la liste des attributs pour pouvoir construire le report
+    private void moveSelectedStudyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveSelectedStudyButtonActionPerformed
+        //String selectedUID = receivedUIDList.getSelectedValue();
+        //scu.doMoveScu(selectedUID);
+    }//GEN-LAST:event_moveSelectedStudyButtonActionPerformed
+
+    private void SelectDicomdirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectDicomdirActionPerformed
+        JFileChooser jfc = new JFileChooser("D:\\Users\\INFO-H-400\\Downloads\\DICOMDIR\\DICOMDIR");
         
-    }//GEN-LAST:event_reportButtonActionPerformed
+        if( jfc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION ){
+            DicomInputStream dis = null;
+            try {
+                dicomdirPath = jfc.getSelectedFile();
+                System.out.println(dicomdirPath.getAbsolutePath());
+                dis = new DicomInputStream(dicomdirPath);
+                AttributeList al = new AttributeList();
+                al.read(dis);
+                dicomdir = new DicomDirectory(al);
+                dicomdirTree.setModel(dicomdir);
+            } catch (IOException | DicomException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    dis.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        }
+    }//GEN-LAST:event_SelectDicomdirActionPerformed
+
+    private void dicomdirTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_dicomdirTreeValueChanged
+        Object selectedObject = dicomdirTree.getLastSelectedPathComponent();
+        DicomDirectoryRecord ddr = (DicomDirectoryRecord) selectedObject;
+        AttributeList al = ddr.getAttributeList();
+        //dicomImageTextPane1.setText(al.toString());
+        
+        if( al.get(TagFromName.DirectoryRecordType).getSingleStringValueOrEmptyString().equals("IMAGE") ){
+            try {
+                String imagePath = al.get(TagFromName.ReferencedFileID).getDelimitedStringValuesOrEmptyString();
+                File imageFile = new File(dicomdirPath.getParent(), imagePath);
+                
+                System.out.println(imagePath);
+                System.out.println(imageFile.getAbsolutePath());
+                SourceImage sImg = new SourceImage(imageFile.getAbsolutePath()); // path = path to the DICOM file containing the image data. Note that the DICOMDIR doesn't have the image data!
+                dicomImageLabel.setIcon(new ImageIcon(sImg.getBufferedImage())); // Shows image in a jLabel
+            } catch (IOException | DicomException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }//GEN-LAST:event_dicomdirTreeValueChanged
 
     /**
      * @param args the command line arguments
@@ -259,13 +353,17 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton SelectDicomdir;
     private javax.swing.JLabel adtRspLabel;
+    private javax.swing.JLabel dicomImageLabel;
+    private javax.swing.JTree dicomdirTree;
     private javax.swing.JTabbedPane fhirPane;
     private javax.swing.JTextField hl7HostTextField;
     private javax.swing.JTextField hl7PortTextField;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JButton moveSelectedStudyButton;
     private javax.swing.JPanel patientPanel;
