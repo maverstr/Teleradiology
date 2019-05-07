@@ -33,7 +33,7 @@ public class ClientUpload {
     
     private class FindScuIdentifierHandler extends IdentifierHandler {
         
-        public ArrayList<String> receivedPatientName = new ArrayList();
+        public ArrayList<String> receivedStudyInstanceUIDs = new ArrayList();
         
         @Override
         public void doSomethingWithIdentifier(AttributeList identifier) throws DicomException {
@@ -43,7 +43,7 @@ public class ClientUpload {
                 System.out.println(tag.toString() + " :: " + identifier.get(tag).getSingleStringValueOrEmptyString());
             }
             
-            receivedPatientName.add(identifier.get(TagFromName.PatientName).getSingleStringValueOrEmptyString());
+            receivedStudyInstanceUIDs.add(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString());
         }
         
     }
@@ -75,7 +75,7 @@ public class ClientUpload {
                     SOPClass.StudyRootQueryRetrieveInformationModelFind,
                     identifier,
                     handler);
-                return handler.receivedPatientName;
+                return handler.receivedStudyInstanceUIDs;
         
         } catch (DicomException | DicomNetworkException | IOException ex) {
             Logger.getLogger(DICOMViewer.class.getName()).log(Level.SEVERE, null, ex);
