@@ -33,7 +33,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Patient.findAll", query = "SELECT p FROM Patient p")
     , @NamedQuery(name = "Patient.findByIdPatient", query = "SELECT p FROM Patient p WHERE p.idPatient = :idPatient")
-    , @NamedQuery(name = "Patient.findByActive", query = "SELECT p FROM Patient p WHERE p.active = :active")})
+    , @NamedQuery(name = "Patient.findByActive", query = "SELECT p FROM Patient p WHERE p.active = :active")
+    , @NamedQuery(name = "Patient.findByName", query = "SELECT p FROM Patient p WHERE p.person.nameGiven = :nameGiven")})
+
 public class Patient implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -88,6 +90,7 @@ public class Patient implements Serializable {
     public Collection<Imagingstudy> getImagingstudyCollection() {
         return imagingstudyCollection;
     }
+
 
     public void setImagingstudyCollection(Collection<Imagingstudy> imagingstudyCollection) {
         this.imagingstudyCollection = imagingstudyCollection;
