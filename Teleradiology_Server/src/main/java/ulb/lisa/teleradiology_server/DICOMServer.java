@@ -39,6 +39,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
@@ -82,7 +83,7 @@ public class DICOMServer {
    private void startServer(int port, String aetitle, File storePath, StoredFilePathStrategy sfps) throws IOException{
        NetworkApplicationInformation nai = new NetworkApplicationInformation();
         try {
-            nai.add("LOCAL_STORESCP", "STORESCP", "localhost", 11113, null, null);
+            nai.add("LOCAL_STORESCP", "STORESCP109", "localhost", 11113, null, null);
         } catch (DicomNetworkException ex) {
             Logger.getLogger(DICOMServer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -113,28 +114,47 @@ public class DICOMServer {
         private final SeriesJpaController seriesCtrl = new SeriesJpaController(emfac);
         private final InstanceJpaController instanceCtrl = new InstanceJpaController(emfac);
         
+        private AttributeList al = new AttributeList();
+        private AttributeList patientList = new AttributeList();
         
+        private String nameToBeSearched;
         boolean stop = false;
         
         @Override
         public void performQuery(String affectedSOPClassUID, AttributeList al, boolean bln) {
+            
             System.out.println(affectedSOPClassUID);
             System.out.println(al);
+            this.al = al;
+            nameToBeSearched = Attribute.getDelimitedStringValuesOrEmptyString(this.al,TagFromName.PatientName);
+            if(stop){
+                System.out.println("closing");
+
+                close();
+            }
+            
             
         }
 
         @Override
-        public AttributeList next() {
+        public AttributeList next() {    
             if( stop ) return null;
-            AttributeList al = new AttributeList();
-            try
-                {AttributeTag t = TagFromName.PatientName; Attribute a = new PersonNameAttribute(t); a.addValue("Test test"); al.put(TagFromName.PatientName, a);}
-            catch( DicomException ex ){
-                Logger.getLogger(DICOMServer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
+            Patient patient = new Patient();
+            String patientName=nameToBeSearched;
+            System.out.println("searching for: "+ patientName);
+            patient = patientController.findPatientByName(patientName);
+            Imagingstudy study = studyCtrl.findImagingstudyByPatientID(patient.getIdPatient());
+            System.out.println("found: " + patient);
+                try {
+                    patientList.putNewAttribute(TagFromName.PatientName).addValue(patient.getPerson().getNameGiven());
+                    patientList.putNewAttribute(TagFromName.StudyInstanceUID).addValue(study.getUid());
+                } catch (DicomException ex) {
+                    Logger.getLogger(DICOMServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
             stop = true;
-            return al;
+            System.out.println("patient list: "+ patientList);
+
+            return patientList;
         }
 
         @Override
@@ -221,7 +241,6 @@ public class DICOMServer {
            
             System.out.println("value type"+test);
 
-            
             Patientdicomidentifier pdi = pdiCtrl.findPatientdicomidentifierByDicomIdentifier(patientID);
             Patient pat = null;
 
@@ -275,7 +294,6 @@ public class DICOMServer {
                 instanceCtrl.create(instance);
             }
 
-            System.out.println("endinggggg");
     }
 
 
