@@ -33,6 +33,7 @@ public class ClientUpload {
     
     private class FindScuIdentifierHandler extends IdentifierHandler {
         
+        //public ArrayList<String> receivedStudyInstanceUIDs = new ArrayList();
         public ArrayList<String> receivedStudyInstanceUIDs = new ArrayList();
         
         @Override
@@ -43,7 +44,7 @@ public class ClientUpload {
                 System.out.println(tag.toString() + " :: " + identifier.get(tag).getSingleStringValueOrEmptyString());
             }
             
-            receivedStudyInstanceUIDs.add(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString());
+            receivedStudyInstanceUIDs.add(identifier.get(TagFromName.StudyDescription).getSingleStringValueOrEmptyString());//là qu'on choisit quoi afficher après avoir rechrché le patient
         }
         
     }
@@ -56,7 +57,7 @@ public class ClientUpload {
             
             //specify attributes to retrieve and pass in any search criteria
             //query root of "study" to retrieve studies
-            
+            identifier.putNewAttribute(TagFromName.ReferencedFileID);
             identifier.putNewAttribute(TagFromName.QueryRetrieveLevel).addValue("STUDY");
             identifier.putNewAttribute(TagFromName.PatientName,specificCharacterSet).addValue(searchPatientName);
             identifier.putNewAttribute(TagFromName.PatientID,specificCharacterSet);
@@ -68,9 +69,9 @@ public class ClientUpload {
             identifier.putNewAttribute(TagFromName.StudyDate);
             
             //retrieve all studies belonging to patient with name 'Bowen'
-            new FindSOPClassSCU("192.168.3.109",
-                    443,
-                    "STORESCP109",
+            new FindSOPClassSCU("localhost",
+                    4242,
+                    "ORTHANC",
                     "FINDSCU",
                     SOPClass.StudyRootQueryRetrieveInformationModelFind,
                     identifier,
