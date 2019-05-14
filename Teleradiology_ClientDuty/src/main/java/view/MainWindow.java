@@ -176,19 +176,54 @@ public class MainWindow extends javax.swing.JFrame {
  
     
     private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportButtonActionPerformed
-        // TODO : créer un DICOM SR et ouvrir une fentre pop-up pour modifier
-        //ce rapport
-        // TO DO : public boolean isSRDocument() --> fct pour tester attribute list
         if (al == null){
-            JOptionPane.showMessageDialog(null,"Vous n'avez pas sélectionner de fichier DICOM" );
+            JOptionPane.showMessageDialog(null,"You don't choose any DICOM file " );
         }
-        else if(false){
+        else if(al.get(TagFromName.SeriesInstanceUID) != null){
+            //TO DO : récup le fichier à l'adresse donné par dicomdir pour aller chercher l'attribute list complète
+            Object selectedObject = dicomdirTree.getLastSelectedPathComponent();
+            DicomDirectoryRecord ddr = (DicomDirectoryRecord) selectedObject;
+            String nbserie = (al.get(TagFromName.SeriesNumber).getSingleStringValueOrEmptyString());
+            //File serieFile = new File((File) ddr.getParent(), nbserie); //l'UPCAST NE PASSE PAS, trouver une autre solution abso
+            //System.out.println(serieFile.getPath());
+            //System.out.println(filePath);
+            //System.out.println(imageFile.getAbsolutePath());
+            /*DicomInputStream dis=null;
+            try {
+                dis = new DicomInputStream(file);
+                AttributeList alist = new AttributeList();
+                alist.read(dis);
+                al.put(TagFromName.StudyInstanceUID, alist.get(TagFromName.StudyInstanceUID)); //Pas très bonne pratique, au mieux, on devrait prendre tout l'AL
+                //al.put(TagFromName.SeriesInstanceUID,alist.get(TagFromName.SeriesInstanceUID));//mais ça ne marchait pas du coup on prend juste ce qui est nécessaire
+                al.put(TagFromName.PatientName,alist.get(TagFromName.PatientName));
+                WriteReport reportWindow = new WriteReport(al);
+                reportWindow.setVisible(true);
+            } catch (IOException | DicomException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }*/
+        }
+        else if(al.get(TagFromName.ReferencedSOPInstanceUIDInFile) != null){
+            String filePath = al.get(TagFromName.ReferencedFileID).getDelimitedStringValuesOrEmptyString();
+            File imageFile = new File(dicomdirPath.getParent(), filePath);
+            System.out.println(filePath);
+            System.out.println(imageFile.getAbsolutePath());
+            DicomInputStream dis=null;
+            try {
+                dis = new DicomInputStream(imageFile);
+                AttributeList alist = new AttributeList();
+                alist.read(dis);
+                al.put(TagFromName.StudyInstanceUID, alist.get(TagFromName.StudyInstanceUID)); //Pas très bonne pratique, au mieux, on devrait prendre tout l'AL
+                al.put(TagFromName.SeriesInstanceUID,alist.get(TagFromName.SeriesInstanceUID));//mais ça ne marchait pas du coup on prend juste ce qui est nécessaire
+                al.put(TagFromName.PatientName,alist.get(TagFromName.PatientName));
+                WriteReport reportWindow = new WriteReport(al);
+                reportWindow.setVisible(true);
+            } catch (IOException | DicomException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         else{
-            WriteReport reportWindow = new WriteReport(al);
-            reportWindow.setVisible(true);
+            JOptionPane.showMessageDialog(null,"You need to select a serie or an image" );
         }
-        //Report report = new Report(al); //TO DO, récupérer la liste des attributs pour pouvoir construire le report
 
     }//GEN-LAST:event_reportButtonActionPerformed
 
@@ -244,7 +279,6 @@ public class MainWindow extends javax.swing.JFrame {
         Object selectedObject = dicomdirTree.getLastSelectedPathComponent();
         DicomDirectoryRecord ddr = (DicomDirectoryRecord) selectedObject;
         al = ddr.getAttributeList();
-        //dicomImageTextPane1.setText(al.toString());
         
         if( al.get(TagFromName.DirectoryRecordType).getSingleStringValueOrEmptyString().equals("IMAGE") ){
             try {
