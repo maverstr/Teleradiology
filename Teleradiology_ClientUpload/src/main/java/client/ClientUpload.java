@@ -68,9 +68,9 @@ public class ClientUpload {
             identifier.putNewAttribute(TagFromName.StudyDate);
             
             //retrieve all studies belonging to patient with name 'Bowen'
-            new FindSOPClassSCU("localhost",
-                    4242,
-                    "ORTHANC",
+            new FindSOPClassSCU("192.168.3.109",
+                    443,
+                    "STORESCP109",
                     "FINDSCU",
                     SOPClass.StudyRootQueryRetrieveInformationModelFind,
                     identifier,
@@ -87,9 +87,13 @@ public class ClientUpload {
     public void doMoveScu(String studyInstanceUID) {
         try {
             AttributeList identifier = new AttributeList();
+            System.out.println("A");
             { AttributeTag t = TagFromName.QueryRetrieveLevel; Attribute a = new CodeStringAttribute(t); a.addValue("STUDY"); identifier.put(t,a); }
+            System.out.println("B");
             { AttributeTag t = TagFromName.StudyInstanceUID; Attribute a = new UniqueIdentifierAttribute(t); a.addValue(studyInstanceUID); identifier.put(t,a); }
+            System.out.println("C");
             new MoveSOPClassSCU("localhost",4242,"ORTHANC","MOVESCU","STORESCP",SOPClass.StudyRootQueryRetrieveInformationModelMove,identifier);
+            System.out.println("D");
         }
         catch (Exception e) {
             System.err.println(e);

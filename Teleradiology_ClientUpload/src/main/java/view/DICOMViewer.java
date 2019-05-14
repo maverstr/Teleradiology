@@ -10,6 +10,7 @@ import com.pixelmed.dicom.AttributeList;
 import com.pixelmed.dicom.DicomDirectory;
 import com.pixelmed.dicom.DicomDirectoryRecord;
 import com.pixelmed.dicom.DicomException;
+import com.pixelmed.network.DicomNetworkException;
 import com.pixelmed.dicom.DicomInputStream;
 import com.pixelmed.dicom.TagFromName;
 import com.pixelmed.display.SourceImage;
@@ -38,6 +39,7 @@ public class DICOMViewer extends javax.swing.JFrame {
     ArrayList<Patient> patientsSearchResult = new ArrayList();
     File dicomdirPath;
     TreeModel dicomdir = new DefaultTreeModel(null);
+    private String studyToMove;
     private final EntityManagerFactory emfac = Persistence.createEntityManagerFactory("Teleradiology");
     private final PatientJpaController patientController = new PatientJpaController(emfac);
     private PersonListModel<Patient> patientModel = null;
@@ -174,10 +176,18 @@ public class DICOMViewer extends javax.swing.JFrame {
         DicomDirectoryRecord ddr = (DicomDirectoryRecord) selectedObject;
         AttributeList al = ddr.getAttributeList();
         //dicomImageTextPane1.setText(al.toString());
+        if( al.get(TagFromName.DirectoryRecordType).getSingleStringValueOrEmptyString().equals("STUDY") ){
+            System.out.println("bla");
+            studyToMove = al.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString();
+            System.out.println(studyToMove);
+        }
+            
         
         if( al.get(TagFromName.DirectoryRecordType).getSingleStringValueOrEmptyString().equals("IMAGE") ){
             try {
+                
                 String imagePath = al.get(TagFromName.ReferencedFileID).getDelimitedStringValuesOrEmptyString();
+                
                 File imageFile = new File(dicomdirPath.getParent(), imagePath);
                 
                 System.out.println(imagePath);
@@ -215,9 +225,16 @@ public class DICOMViewer extends javax.swing.JFrame {
 
     private void moveSelectedStudyButton1moveSelectedStudyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveSelectedStudyButton1moveSelectedStudyButtonActionPerformed
         // TODO add your handling code here:
-        String selectedUID = receivedUIDList.getSelectedValue();
+        //String selectedUID = receivedUIDList.getSelectedValue();
+        String selectedUID = studyToMove;
+        /*Object selectedObject = dicomdirTree.getLastSelectedPathComponent().getSelectedValue();
+        String selectedUID = selectedObject.getStudyInstanceUID();*/
+        System.out.println(selectedUID);
+        /*DicomDirectoryRecord ddr = (DicomDirectoryRecord) selectedObject;
+        AttributeList al = ddr.getAttributeList();*/
+        System.out.println("j'ai récupéré la valeur");
         scu.doMoveScu(selectedUID);
-        System.out.println("J'ai bougé vers ORthanc");
+        System.out.println("Je l'ai envoyé sur l'ordi");
     }//GEN-LAST:event_moveSelectedStudyButton1moveSelectedStudyButtonActionPerformed
 
     private void SelectDicomdirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectDicomdirActionPerformed
