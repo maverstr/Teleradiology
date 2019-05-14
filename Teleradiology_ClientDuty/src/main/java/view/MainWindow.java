@@ -62,11 +62,6 @@ public class MainWindow extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         fhirPane = new javax.swing.JTabbedPane();
-        patientPanel = new javax.swing.JPanel();
-        sendADTButton = new javax.swing.JButton();
-        adtRspLabel = new javax.swing.JLabel();
-        hl7HostTextField = new javax.swing.JTextField();
-        hl7PortTextField = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         receivedUIDList = new javax.swing.JList<>();
@@ -83,49 +78,6 @@ public class MainWindow extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        sendADTButton.setText("Send ADT");
-        sendADTButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sendADTButtonActionPerformed(evt);
-            }
-        });
-
-        hl7HostTextField.setText("localhost");
-
-        hl7PortTextField.setText("54321");
-
-        javax.swing.GroupLayout patientPanelLayout = new javax.swing.GroupLayout(patientPanel);
-        patientPanel.setLayout(patientPanelLayout);
-        patientPanelLayout.setHorizontalGroup(
-            patientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(patientPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(sendADTButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(hl7HostTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(hl7PortTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(adtRspLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(592, Short.MAX_VALUE))
-        );
-        patientPanelLayout.setVerticalGroup(
-            patientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(patientPanelLayout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addGroup(patientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(adtRspLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(patientPanelLayout.createSequentialGroup()
-                        .addGroup(patientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(sendADTButton)
-                            .addComponent(hl7HostTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(hl7PortTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 539, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-
-        fhirPane.addTab("Patient", patientPanel);
 
         jScrollPane1.setViewportView(receivedUIDList);
 
@@ -223,29 +175,14 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
  
     
-    private void sendADTButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendADTButtonActionPerformed
-        Person per = personForm.getPerson();
-        Patient p = new Patient();
-        p.setPerson(per);
-
-        String host = hl7HostTextField.getText();
-        int port = Integer.valueOf(hl7PortTextField.getText());
-        /*
-        if( HL7Client.send_ADT_A01(p, host, port) ){
-            adtRspLabel.setText("ACK Received");
-        }
-        else{
-            adtRspLabel.setText("Error.");
-        }
-        */
-    }//GEN-LAST:event_sendADTButtonActionPerformed
-
     private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportButtonActionPerformed
         // TODO : créer un DICOM SR et ouvrir une fentre pop-up pour modifier
         //ce rapport
         // TO DO : public boolean isSRDocument() --> fct pour tester attribute list
         if (al == null){
             JOptionPane.showMessageDialog(null,"Vous n'avez pas sélectionner de fichier DICOM" );
+        }
+        else if(false){
         }
         else{
             WriteReport reportWindow = new WriteReport(al);
@@ -362,23 +299,18 @@ public class MainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton SelectDicomdir;
-    private javax.swing.JLabel adtRspLabel;
     private javax.swing.JLabel dicomImageLabel;
     private javax.swing.JTree dicomdirTree;
     private javax.swing.JTabbedPane fhirPane;
-    private javax.swing.JTextField hl7HostTextField;
-    private javax.swing.JTextField hl7PortTextField;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JButton moveSelectedStudyButton;
-    private javax.swing.JPanel patientPanel;
     private javax.swing.JList<String> receivedUIDList;
     private javax.swing.JButton refreshButton;
     private javax.swing.JButton reportButton;
-    private javax.swing.JButton sendADTButton;
     // End of variables declaration//GEN-END:variables
     private view.CreatePersonForm personForm;
 }

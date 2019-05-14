@@ -31,8 +31,8 @@ public class Report extends StructuredReport{
         System.out.println("Un nouveau dicom SR a été créé sur base d'une liste d'attributs \n");
         System.out.println(al.toString());
         SpecificCharacterSet scs = new SpecificCharacterSet((String[])null); //créé un scs vide qui sera rempli à la ligne suivante
-        al.putNewAttribute(TagFromName.TextValue, scs).addValue(text); //rempli le champ vide avec du text
-        
+        al.putNewAttribute(TagFromName.TextValue, scs).addValue(text); //rempli l'attribut TEXTVALUE avec du text
+        //TO DO  : rajouter les attributs nécessaires à l'identification du patient (StudyInstanceUID et patientID
         try {
             FileOutputStream os = new FileOutputStream("D:\\Users\\INFO-H-400\\libraries\\dcm4che-5.14.0\\bin\\test.dcm");
             DicomOutputStream dos = new DicomOutputStream(os, null, "1.2.840.10008.1.2");   //Dicom output stream has transfert syntax uid :
