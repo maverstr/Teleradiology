@@ -23,17 +23,11 @@ public class WriteReport extends javax.swing.JFrame {
     
     /**
      * Creates new form WriteReport
-     * @param al
+     * @param alist
      */
     public WriteReport(AttributeList alist) {
         initComponents();
-        al = alist;
-        try {
-            rep = new Report(al);
-        } catch (DicomException ex) {
-            Logger.getLogger(WriteReport.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+        al = alist;   
     }
     public void CloseFrame() {
         super.dispose();
@@ -107,9 +101,12 @@ public class WriteReport extends javax.swing.JFrame {
         if ("".equals(s)) {
             JOptionPane.showMessageDialog(null,"Il faut écrire un rapport avant de sauver !" );
         } else {
-            //rep.getAttributeList().putNewAttribute(, scs) TO DO
+            try {
+                rep = new Report(al,s);
+            } catch (DicomException ex) {
+                Logger.getLogger(WriteReport.class.getName()).log(Level.SEVERE, null, ex);
+            }
             System.out.println(s + "\nSaved in DICOM SR \n");
-            // SAUVER LE TEXTE DANS LE DICOM SR --> public Attribute putNewAttribute(AttributeTag at, SpecificCharacterSet scs) throws DicomException {
             CloseFrame();
         }
     }//GEN-LAST:event_saveButtonActionPerformed

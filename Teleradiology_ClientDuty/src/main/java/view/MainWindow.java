@@ -278,7 +278,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_moveSelectedStudyButtonActionPerformed
 
     private void SelectDicomdirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectDicomdirActionPerformed
-        JFileChooser jfc = new JFileChooser("D:\\Users\\INFO-H-400\\Downloads\\DICOMDIR\\DICOMDIR");
+        JFileChooser jfc = new JFileChooser("D:\\Users\\INFO-H-400\\libraries\\dcm4che-5.14.0\\bin");
         
         if( jfc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION ){
             DicomInputStream dis = null;
