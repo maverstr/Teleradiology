@@ -75,7 +75,7 @@ public class DICOMServer {
         
     }
     
-    public DICOMServer() throws IOException{
+    public DICOMServer() throws IOException{ 
         //Starting server
         startServer(443, "STORESCP109",new File("D:\\Users\\INFO-H-400\\Documents"), null);
     }
