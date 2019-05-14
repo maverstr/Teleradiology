@@ -153,6 +153,7 @@ public class DICOMServer {
                     patientList.putNewAttribute(TagFromName.StudyInstanceUID).addValue(study.getUid());
                     patientList.putNewAttribute(TagFromName.PatientID).addValue(patient.getIdPatient());
                     patientList.putNewAttribute(TagFromName.ReferencedFileID).addValue("TEST FILE ID");
+                    //patientList.putNewAttribute(TagFromName.TextValue).addValue("Le patient a une tumeur -> too bad");
                 } catch (DicomException ex) {
                     Logger.getLogger(DICOMServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -307,6 +308,7 @@ public class DICOMServer {
             String seriesDescription = getTag(al, TagFromName.SeriesDescription);
             String instanceUID = getTag(al, TagFromName.SOPInstanceUID);
             String test= getTag(al, TagFromName.ValueType);
+            //String Text = getTag(al, TagFromName.TextValue);
            
             System.out.println("value type"+test);
 
