@@ -13,6 +13,8 @@ import com.pixelmed.dicom.CodeStringAttribute;
 
 import com.pixelmed.dicom.DicomException;
 import com.pixelmed.dicom.PersonNameAttribute;
+import com.pixelmed.dicom.SetOfDicomFiles;
+import com.pixelmed.dicom.SetOfDicomFiles.DicomFile;
 import com.pixelmed.dicom.StoredFilePathStrategy;
 import com.pixelmed.dicom.TagFromName;
 import com.pixelmed.dicom.UniqueIdentifierAttribute;
@@ -116,6 +118,7 @@ public class DICOMServer {
         
         private AttributeList al = new AttributeList();
         private AttributeList patientList = new AttributeList();
+        private AttributeList responseList = new AttributeList();
         
         private String nameToBeSearched;
         boolean stop = false;
@@ -148,6 +151,8 @@ public class DICOMServer {
                 try {
                     patientList.putNewAttribute(TagFromName.PatientName).addValue(patient.getPerson().getNameGiven());
                     patientList.putNewAttribute(TagFromName.StudyInstanceUID).addValue(study.getUid());
+                    patientList.putNewAttribute(TagFromName.PatientID).addValue(patient.getIdPatient());
+                    patientList.putNewAttribute(TagFromName.ReferencedFileID).addValue("TEST FILE ID");
                 } catch (DicomException ex) {
                     Logger.getLogger(DICOMServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -193,11 +198,75 @@ public class DICOMServer {
         
     }
     
+    
+    
+    
     private class RetrieveResponseHandler implements RetrieveResponseGeneratorFactory {
 
+        
         @Override
         public RetrieveResponseGenerator newInstance() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return new RetrieveResponseGenerator() {
+                private final EntityManagerFactory emfac = Persistence.createEntityManagerFactory("Teleradiology");
+                private final PatientJpaController patientController = new PatientJpaController(emfac);
+                private final PatientdicomidentifierJpaController pdiCtrl = new PatientdicomidentifierJpaController(emfac);
+                private final PractitionerdicomidentifierJpaController prapdiCtrl = new PractitionerdicomidentifierJpaController(emfac);
+                private final PatientJpaController patientCtrl = new PatientJpaController(emfac);
+                private final PersonJpaController personCtrl = new PersonJpaController(emfac);
+                private final PractitionerdicomidentifierJpaController praCtrl = new PractitionerdicomidentifierJpaController(emfac);
+                private final ImagingstudyJpaController studyCtrl = new ImagingstudyJpaController(emfac);
+                private final SeriesJpaController seriesCtrl = new SeriesJpaController(emfac);
+                private final InstanceJpaController instanceCtrl = new InstanceJpaController(emfac);
+
+                private AttributeList al = new AttributeList();
+                private AttributeList patientList = new AttributeList();
+                private SetOfDicomFiles responseList = new SetOfDicomFiles();
+
+                private String nameToBeSearched;
+                boolean stop = false;
+                
+        
+                @Override
+                public void performRetrieve(String affectedSOPClassUID, AttributeList al, boolean bln) {
+                    System.out.println(affectedSOPClassUID);
+                    System.out.println(al);
+                    this.al = al;
+                    nameToBeSearched = Attribute.getDelimitedStringValuesOrEmptyString(this.al,TagFromName.PatientName);
+                    if(stop){
+                        System.out.println("closing");
+
+                        close();
+            }
+            
+                }
+
+                @Override
+                public SetOfDicomFiles getDicomFiles() {
+
+
+                    return responseList;                
+                }
+
+                @Override
+                public int getStatus() {
+                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+
+                @Override
+                public AttributeTagAttribute getOffendingElement() {
+                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+
+                @Override
+                public String getErrorComment() {
+                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+
+                @Override
+                public void close() {
+                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+            };
         }
         
     }
