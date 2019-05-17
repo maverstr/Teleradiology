@@ -68,12 +68,8 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="refreshButton" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="moveSelectedStudyButton" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="refreshButton" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jScrollPane1" min="-2" pref="168" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -100,7 +96,6 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="reportButton" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="SelectDicomdir" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
-                              <Component id="moveSelectedStudyButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -134,14 +129,6 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JButton" name="moveSelectedStudyButton">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="C-MOVE"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="moveSelectedStudyButtonActionPerformed"/>
-              </Events>
-            </Component>
             <Component class="javax.swing.JButton" name="refreshButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="REFRESH"/>
