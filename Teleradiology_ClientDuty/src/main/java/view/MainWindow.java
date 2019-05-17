@@ -25,6 +25,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 import model.Patient;
 import model.Person;
 
@@ -179,11 +180,13 @@ public class MainWindow extends javax.swing.JFrame {
         if (al == null){
             JOptionPane.showMessageDialog(null,"You don't choose any DICOM file " );
         }
+        /*ABANDON de mettre des commentaires sur les series
         else if(al.get(TagFromName.SeriesInstanceUID) != null){
             //TO DO : récup le fichier à l'adresse donné par dicomdir pour aller chercher l'attribute list complète
-            Object selectedObject = dicomdirTree.getLastSelectedPathComponent();
-            DicomDirectoryRecord ddr = (DicomDirectoryRecord) selectedObject;
-            String nbserie = (al.get(TagFromName.SeriesNumber).getSingleStringValueOrEmptyString());
+            //Object selectedObject = dicomdirTree.getLastSelectedPathComponent();
+            //System.out.println(selectedObject.toString());
+            //DicomDirectoryRecord ddr = (DicomDirectoryRecord) selectedObject;
+            //String nbserie = (al.get(TagFromName.SeriesNumber).getSingleStringValueOrEmptyString());
             //File serieFile = new File((File) ddr.getParent(), nbserie); //l'UPCAST NE PASSE PAS, trouver une autre solution abso
             //System.out.println(serieFile.getPath());
             //System.out.println(filePath);
@@ -200,8 +203,8 @@ public class MainWindow extends javax.swing.JFrame {
                 reportWindow.setVisible(true);
             } catch (IOException | DicomException ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
-        }
+            }//
+        }*/
         else if(al.get(TagFromName.ReferencedSOPInstanceUIDInFile) != null){
             String filePath = al.get(TagFromName.ReferencedFileID).getDelimitedStringValuesOrEmptyString();
             File imageFile = new File(dicomdirPath.getParent(), filePath);
@@ -214,7 +217,7 @@ public class MainWindow extends javax.swing.JFrame {
                 alist.read(dis);
                 al.put(TagFromName.StudyInstanceUID, alist.get(TagFromName.StudyInstanceUID)); //Pas très bonne pratique, au mieux, on devrait prendre tout l'AL
                 al.put(TagFromName.SeriesInstanceUID,alist.get(TagFromName.SeriesInstanceUID));//mais ça ne marchait pas du coup on prend juste ce qui est nécessaire
-                al.put(TagFromName.PatientName,alist.get(TagFromName.PatientName));
+                al.put(TagFromName.PatientName,alist.get(TagFromName.PatientName)); //TO DO : rajouter le patient ID
                 WriteReport reportWindow = new WriteReport(al);
                 reportWindow.setVisible(true);
             } catch (IOException | DicomException ex) {
@@ -222,7 +225,8 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
         else{
-            JOptionPane.showMessageDialog(null,"You need to select a serie or an image" );
+            JOptionPane.showMessageDialog(null,"You need to select an image to comment" );
+            //Implement a way to verify that no report was previously written
         }
 
     }//GEN-LAST:event_reportButtonActionPerformed
