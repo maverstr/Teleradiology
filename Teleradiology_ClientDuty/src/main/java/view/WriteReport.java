@@ -11,6 +11,7 @@ import com.pixelmed.dicom.DicomException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import client.DICOMSCU;
 
 /**
  *
@@ -20,6 +21,7 @@ public class WriteReport extends javax.swing.JFrame {
     
     private static Report rep;
     private static AttributeList al;
+    private static DICOMSCU scu =new DICOMSCU();
     
     /**
      * Creates new form WriteReport
@@ -53,7 +55,7 @@ public class WriteReport extends javax.swing.JFrame {
         reportTex.setRows(5);
         jScrollPane1.setViewportView(reportTex);
 
-        saveButton.setText("Save");
+        saveButton.setText("Save and Send");
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveButtonActionPerformed(evt);
@@ -75,7 +77,7 @@ public class WriteReport extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(saveButton))
                     .addComponent(windowTitle))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,6 +109,7 @@ public class WriteReport extends javax.swing.JFrame {
                 Logger.getLogger(WriteReport.class.getName()).log(Level.SEVERE, null, ex);
             }
             System.out.println(s + "\nSaved in DICOM SR \n");
+            scu.doMoveToYouScu(al);
             CloseFrame();
         }
     }//GEN-LAST:event_saveButtonActionPerformed

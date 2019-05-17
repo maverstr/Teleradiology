@@ -66,7 +66,6 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         receivedUIDList = new javax.swing.JList<>();
-        moveSelectedStudyButton = new javax.swing.JButton();
         refreshButton = new javax.swing.JButton();
         reportButton = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -81,13 +80,6 @@ public class MainWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jScrollPane1.setViewportView(receivedUIDList);
-
-        moveSelectedStudyButton.setText("C-MOVE");
-        moveSelectedStudyButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                moveSelectedStudyButtonActionPerformed(evt);
-            }
-        });
 
         refreshButton.setText("REFRESH");
         refreshButton.addActionListener(new java.awt.event.ActionListener() {
@@ -124,11 +116,8 @@ public class MainWindow extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(refreshButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(moveSelectedStudyButton))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(refreshButton, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -149,8 +138,7 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(refreshButton)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(reportButton)
-                        .addComponent(SelectDicomdir, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(moveSelectedStudyButton)))
+                        .addComponent(SelectDicomdir, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(dicomImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -233,8 +221,8 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         // TODO : récupérer les dossiers non traités sur le serveur
-        scu.doMoveScu("*"); //ATTENTION vérifier qu'on sait récup les infos
-
+        scu.doMoveToMeScu("*"); //permet de récupérer tout ce qui est sur le serveur
+        //ATTENTION vérifier qu'on sait récup les infos
         /*ArrayList<String> receivedStudyInstanceUIDs = doFindScu(azaz.getText)
 
         //AFFFICHAGE DES PATIENTS RECUPERES DANS LA DATABASE
@@ -247,12 +235,7 @@ public class MainWindow extends javax.swing.JFrame {
             receivedUIDList.setModel(receivedListModel);
         }*/
     }//GEN-LAST:event_refreshButtonActionPerformed
-
-    private void moveSelectedStudyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveSelectedStudyButtonActionPerformed
-        //String selectedUID = receivedUIDList.getSelectedValue();
-        //scu.doMoveScu(selectedUID);
-    }//GEN-LAST:event_moveSelectedStudyButtonActionPerformed
-
+/**/
     private void SelectDicomdirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectDicomdirActionPerformed
         JFileChooser jfc = new JFileChooser("D:\\Users\\INFO-H-400\\libraries\\dcm4che-5.14.0\\bin");
         
@@ -345,7 +328,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JButton moveSelectedStudyButton;
     private javax.swing.JList<String> receivedUIDList;
     private javax.swing.JButton refreshButton;
     private javax.swing.JButton reportButton;
