@@ -25,6 +25,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 import model.Patient;
 import model.Person;
 
@@ -65,7 +66,6 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         receivedUIDList = new javax.swing.JList<>();
-        moveSelectedStudyButton = new javax.swing.JButton();
         refreshButton = new javax.swing.JButton();
         reportButton = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -80,13 +80,6 @@ public class MainWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jScrollPane1.setViewportView(receivedUIDList);
-
-        moveSelectedStudyButton.setText("C-MOVE");
-        moveSelectedStudyButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                moveSelectedStudyButtonActionPerformed(evt);
-            }
-        });
 
         refreshButton.setText("REFRESH");
         refreshButton.addActionListener(new java.awt.event.ActionListener() {
@@ -123,11 +116,8 @@ public class MainWindow extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(refreshButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(moveSelectedStudyButton))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(refreshButton, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -148,8 +138,7 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(refreshButton)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(reportButton)
-                        .addComponent(SelectDicomdir, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(moveSelectedStudyButton)))
+                        .addComponent(SelectDicomdir, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(dicomImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -179,11 +168,13 @@ public class MainWindow extends javax.swing.JFrame {
         if (al == null){
             JOptionPane.showMessageDialog(null,"You don't choose any DICOM file " );
         }
+        /*ABANDON de mettre des commentaires sur les series
         else if(al.get(TagFromName.SeriesInstanceUID) != null){
             //TO DO : récup le fichier à l'adresse donné par dicomdir pour aller chercher l'attribute list complète
-            Object selectedObject = dicomdirTree.getLastSelectedPathComponent();
-            DicomDirectoryRecord ddr = (DicomDirectoryRecord) selectedObject;
-            String nbserie = (al.get(TagFromName.SeriesNumber).getSingleStringValueOrEmptyString());
+            //Object selectedObject = dicomdirTree.getLastSelectedPathComponent();
+            //System.out.println(selectedObject.toString());
+            //DicomDirectoryRecord ddr = (DicomDirectoryRecord) selectedObject;
+            //String nbserie = (al.get(TagFromName.SeriesNumber).getSingleStringValueOrEmptyString());
             //File serieFile = new File((File) ddr.getParent(), nbserie); //l'UPCAST NE PASSE PAS, trouver une autre solution abso
             //System.out.println(serieFile.getPath());
             //System.out.println(filePath);
@@ -200,8 +191,8 @@ public class MainWindow extends javax.swing.JFrame {
                 reportWindow.setVisible(true);
             } catch (IOException | DicomException ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
-        }
+            }//
+        }*/
         else if(al.get(TagFromName.ReferencedSOPInstanceUIDInFile) != null){
             String filePath = al.get(TagFromName.ReferencedFileID).getDelimitedStringValuesOrEmptyString();
             File imageFile = new File(dicomdirPath.getParent(), filePath);
@@ -214,7 +205,7 @@ public class MainWindow extends javax.swing.JFrame {
                 alist.read(dis);
                 al.put(TagFromName.StudyInstanceUID, alist.get(TagFromName.StudyInstanceUID)); //Pas très bonne pratique, au mieux, on devrait prendre tout l'AL
                 al.put(TagFromName.SeriesInstanceUID,alist.get(TagFromName.SeriesInstanceUID));//mais ça ne marchait pas du coup on prend juste ce qui est nécessaire
-                al.put(TagFromName.PatientName,alist.get(TagFromName.PatientName));
+                al.put(TagFromName.PatientName,alist.get(TagFromName.PatientName)); //TO DO : rajouter le patient ID
                 WriteReport reportWindow = new WriteReport(al);
                 reportWindow.setVisible(true);
             } catch (IOException | DicomException ex) {
@@ -222,15 +213,16 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
         else{
-            JOptionPane.showMessageDialog(null,"You need to select a serie or an image" );
+            JOptionPane.showMessageDialog(null,"You need to select an image to comment" );
+            //Implement a way to verify that no report was previously written
         }
 
     }//GEN-LAST:event_reportButtonActionPerformed
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         // TODO : récupérer les dossiers non traités sur le serveur
-        scu.doMoveScu("*"); //ATTENTION vérifier qu'on sait récup les infos
-
+        scu.doMoveToMeScu("*"); //permet de récupérer tout ce qui est sur le serveur
+        //ATTENTION vérifier qu'on sait récup les infos
         /*ArrayList<String> receivedStudyInstanceUIDs = doFindScu(azaz.getText)
 
         //AFFFICHAGE DES PATIENTS RECUPERES DANS LA DATABASE
@@ -243,12 +235,7 @@ public class MainWindow extends javax.swing.JFrame {
             receivedUIDList.setModel(receivedListModel);
         }*/
     }//GEN-LAST:event_refreshButtonActionPerformed
-
-    private void moveSelectedStudyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveSelectedStudyButtonActionPerformed
-        //String selectedUID = receivedUIDList.getSelectedValue();
-        //scu.doMoveScu(selectedUID);
-    }//GEN-LAST:event_moveSelectedStudyButtonActionPerformed
-
+/**/
     private void SelectDicomdirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectDicomdirActionPerformed
         JFileChooser jfc = new JFileChooser("D:\\Users\\INFO-H-400\\libraries\\dcm4che-5.14.0\\bin");
         
@@ -341,7 +328,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JButton moveSelectedStudyButton;
     private javax.swing.JList<String> receivedUIDList;
     private javax.swing.JButton refreshButton;
     private javax.swing.JButton reportButton;

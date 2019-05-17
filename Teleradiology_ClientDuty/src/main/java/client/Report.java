@@ -32,9 +32,9 @@ public class Report extends StructuredReport{
         System.out.println(al.toString());
         SpecificCharacterSet scs = new SpecificCharacterSet((String[])null); //créé un scs vide qui sera rempli à la ligne suivante
         al.putNewAttribute(TagFromName.TextValue, scs).addValue(text); //rempli l'attribut TEXTVALUE avec du text
-        //TO DO  : rajouter les attributs nécessaires à l'identification du patient (StudyInstanceUID et patientID)
+        String path = al.get(TagFromName.ReferencedFileID).getDelimitedStringValuesOrEmptyString();
         try {
-            FileOutputStream os = new FileOutputStream("D:\\Users\\INFO-H-400\\libraries\\dcm4che-5.14.0\\bin\\test.dcm");
+            FileOutputStream os = new FileOutputStream("D:\\Users\\INFO-H-400\\libraries\\dcm4che-5.14.0\\bin\\DICOMDIR\\"+path+"Report.dcm");
             DicomOutputStream dos = new DicomOutputStream(os, null, "1.2.840.10008.1.2");   //Dicom output stream has transfert syntax uid :
                                                                                             //Implicit VR Endian: Default Transfer Syntax for DICOM
             al.write(dos);
@@ -45,12 +45,4 @@ public class Report extends StructuredReport{
             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private void saveText(String text){
-        
-    }
-    
-    
-
-    
 }
