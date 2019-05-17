@@ -7,7 +7,14 @@
 package view;
 
 import client.ClientUpload;
+import com.pixelmed.dicom.Attribute;
+import com.pixelmed.dicom.AttributeList;
+import com.pixelmed.dicom.AttributeTag;
+import com.pixelmed.dicom.DicomDirectoryRecord;
+import com.pixelmed.dicom.DicomInputStream;
+import com.pixelmed.dicom.TagFromName;
 import java.util.ArrayList;
+import java.util.Set;
 import javax.swing.DefaultListModel;
 
 /**
@@ -16,6 +23,7 @@ import javax.swing.DefaultListModel;
  */
 public class FindStudy extends javax.swing.JFrame {
     ClientUpload scu = new ClientUpload();
+    AttributeList identifier;
     /** Creates new form FindStudy */
     public FindStudy() {
         initComponents();
@@ -37,8 +45,7 @@ public class FindStudy extends javax.swing.JFrame {
         receivedUIDList = new javax.swing.JList<>();
         SearchPatientReportLabel = new javax.swing.JLabel();
         ReportLabel = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
+        ReportReadLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -51,6 +58,11 @@ public class FindStudy extends javax.swing.JFrame {
             }
         });
 
+        receivedUIDList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                receivedUIDListValueChanged(evt);
+            }
+        });
         jScrollPane3.setViewportView(receivedUIDList);
 
         SearchPatientReportLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
@@ -58,8 +70,6 @@ public class FindStudy extends javax.swing.JFrame {
 
         ReportLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         ReportLabel.setText("Report");
-
-        jScrollPane1.setViewportView(jTextPane1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -72,17 +82,17 @@ public class FindStudy extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(76, 76, 76)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(90, 90, 90)
+                                .addComponent(ReportReadLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(SearchPatientReportLabel))
-                        .addContainerGap(23, Short.MAX_VALUE))
+                        .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(PatientNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(48, 48, 48)
                         .addComponent(doCFindButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 212, Short.MAX_VALUE)
                         .addComponent(ReportLabel)
                         .addGap(176, 176, 176))))
         );
@@ -99,7 +109,7 @@ public class FindStudy extends javax.swing.JFrame {
                     .addComponent(ReportLabel))
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1)
+                    .addComponent(ReportReadLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -112,23 +122,61 @@ public class FindStudy extends javax.swing.JFrame {
         System.out.println("Find appelé");
         //String searchStudyUID = dcmPatientNameField.getText();
         String searchName = dcmPatientNameField.getText();
-        ArrayList<String> receivedStudyInstanceUIDs = scu.doFindScu(searchName);
-        if( receivedStudyInstanceUIDs != null ){
+        identifier = scu.doFindScu(searchName);
+        System.out.println(identifier.get(TagFromName.StudyInstanceUID));
+        
+        if(identifier.get(TagFromName.StudyInstanceUID) != null ){
             System.out.println("Trouvé!");
+            ArrayList<String> receivedStudyInstanceUIDs = new ArrayList();
+            System.out.println("Bla");
             DefaultListModel<String> receivedListModel = new DefaultListModel();
-            for( String uid : receivedStudyInstanceUIDs )
-            receivedListModel.addElement(uid);
-            System.out.println("000");
-            /*patientModel = new PersonListModel(patientController.findPatientEntities());
-            System.out.println("1");*/
-            receivedUIDList.setModel(receivedListModel);
-            System.out.println("2");
-
+            System.out.println("Bla Bla");
+            Set<AttributeTag> receivedTags = identifier.keySet();
+            System.out.println("Je vais imprimer");
+            for( AttributeTag tag: receivedTags ){
+                System.out.println(tag.toString() + " :: " + identifier.get(tag).getSingleStringValueOrEmptyString());
+            }
+            //receivedStudyInstanceUIDs.add(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString());//là qu'on choisit quoi afficher après avoir recherché le patient
+            //System.out.println(identifier.get(TagFromName.StudyInstanceUID));
+            System.out.println("Bla Bla Bla");
+            
+            for(String uid : receivedStudyInstanceUIDs){
+                receivedListModel.addElement(uid);
+                System.out.println("000");
+                /*patientModel = new PersonListModel(patientController.findPatientEntities());
+                System.out.println("1");*/
+                receivedUIDList.setModel(receivedListModel);
+                System.out.println("2");
+            }
         }
+        
         else{
             System.out.println("rien trouvé");
         }
     }//GEN-LAST:event_doCFindButton1doCFindButtonActionPerformed
+
+    private void receivedUIDListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_receivedUIDListValueChanged
+        // TODO add your handling code here:
+        Object selectedObject = receivedUIDList.getSelectedValue();
+        System.out.println("11");
+        //AttributeList al = new AttributeList();
+        //DicomDirectoryRecord ddr = (DicomDirectoryRecord) selectedObject;
+        System.out.println("12");
+        //AttributeList al = ddr.getAttributeList();
+        //System.out.println("13");
+        //al.read(evt);
+        if(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString().equals(selectedObject)){
+            System.out.println("14");
+            String x = identifier.get(TagFromName.TextValue).getSingleStringValueOrEmptyString();
+            System.out.println("15");
+            ReportReadLabel.setText(x);
+            System.out.println("16");
+        }
+        System.out.println("17");
+        //Object selectedObject = receivedUIDList.getSelectedValue();
+        //String x = selectedObject.GetReport();
+        //ReportReadLabel.setText(x);
+    }//GEN-LAST:event_receivedUIDListValueChanged
 
     /**
      * @param args the command line arguments
@@ -168,12 +216,11 @@ public class FindStudy extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel PatientNameLabel;
     private javax.swing.JLabel ReportLabel;
+    private javax.swing.JLabel ReportReadLabel;
     private javax.swing.JLabel SearchPatientReportLabel;
     private javax.swing.JTextField dcmPatientNameField;
     private javax.swing.JButton doCFindButton1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextPane jTextPane1;
     private javax.swing.JList<String> receivedUIDList;
     // End of variables declaration//GEN-END:variables
 
