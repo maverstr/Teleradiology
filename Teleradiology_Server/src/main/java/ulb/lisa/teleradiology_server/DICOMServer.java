@@ -41,6 +41,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -125,9 +126,10 @@ public class DICOMServer {
         
         @Override
         public void performQuery(String affectedSOPClassUID, AttributeList al, boolean bln) {
-            
+            System.out.println("C-Find Received");
             System.out.println(affectedSOPClassUID);
             System.out.println(al);
+            
             this.al = al;
             nameToBeSearched = Attribute.getDelimitedStringValuesOrEmptyString(this.al,TagFromName.PatientName);
             if(stop){
@@ -153,7 +155,8 @@ public class DICOMServer {
                     patientList.putNewAttribute(TagFromName.StudyInstanceUID).addValue(study.getUid());
                     patientList.putNewAttribute(TagFromName.PatientID).addValue(patient.getIdPatient());
                     patientList.putNewAttribute(TagFromName.ReferencedFileID).addValue("TEST FILE ID");
-                    //patientList.putNewAttribute(TagFromName.TextValue).addValue("Le patient a une tumeur -> too bad");
+                    patientList.putNewAttribute(TagFromName.TextValue).addValue("TEXT VALUE TEST TEST TEST DE RAPPORT");
+                    patientList.putNewAttribute(TagFromName.DirectoryRecordType).addValue("STUDY");
                 } catch (DicomException ex) {
                     Logger.getLogger(DICOMServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -229,6 +232,7 @@ public class DICOMServer {
         
                 @Override
                 public void performRetrieve(String affectedSOPClassUID, AttributeList al, boolean bln) {
+                    System.out.println("C-MOVE Request received");
                     System.out.println(affectedSOPClassUID);
                     System.out.println(al);
                     this.al = al;
@@ -243,8 +247,30 @@ public class DICOMServer {
 
                 @Override
                 public SetOfDicomFiles getDicomFiles() {
+                    if( stop ){
+                        System.out.println("get STOPPED");
+                        return null;
+                        
+                    }
+                    
 
+                    System.out.println("in GET DICOM FILES");
+                    
+                    File file = new File("D:\\Users\\INFO-H-400\\libraries\\dcm4che-5.14.0\\bin\\DICOMDIR\\2610566\\101\\00010001");
+                    System.out.println("file exists ?: "+file.exists());
+                    /*
+                    try {
+                        responseList.add(file);
+                    } catch (IOException ex) {
+                        Logger.getLogger(DICOMServer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+*/
+                    responseList.add("D:\\Users\\INFO-H-400\\libraries\\dcm4che-5.14.0\\bin\\DICOMDIR\\2610566\\101\\00010002", true);
+                    
 
+                    stop = true;
+                    System.out.println("response list : "+responseList.toString() + " stop");
+                    //System.out.println("attributeList : "+Arrays.toString(responseList.getAttributeLists()));
                     return responseList;                
                 }
 
