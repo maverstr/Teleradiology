@@ -18,6 +18,7 @@ import com.pixelmed.network.DicomNetworkException;
 import com.pixelmed.network.FindSOPClassSCU;
 import com.pixelmed.network.IdentifierHandler;
 import com.pixelmed.network.MoveSOPClassSCU;
+import java.awt.List;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
@@ -35,21 +36,28 @@ public class ClientUpload {
         
         //public ArrayList<String> receivedStudyInstanceUIDs = new ArrayList();
         public ArrayList<String> receivedStudyInstanceUIDs = new ArrayList();
+        //public ArrayList<String> receivedReport = new ArrayList();
+
         
         @Override
         public void doSomethingWithIdentifier(AttributeList identifier) throws DicomException {
             System.out.println("Received C-FIND response:");
             Set<AttributeTag> receivedTags = identifier.keySet();
+            System.out.println("Je vais imprimer");
             for( AttributeTag tag: receivedTags ){
                 System.out.println(tag.toString() + " :: " + identifier.get(tag).getSingleStringValueOrEmptyString());
             }
             
-            receivedStudyInstanceUIDs.add(identifier.get(TagFromName.StudyDescription).getSingleStringValueOrEmptyString());//là qu'on choisit quoi afficher après avoir rechrché le patient
+            receivedStudyInstanceUIDs.add(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString());//là qu'on choisit quoi afficher après avoir recherché le patient
+            //receivedReport.add(identifier.get(TagFromName.TextValue).getSingleStringValueOrEmptyString());
+            System.out.println("j'ai imprimé");
         }
-        
+            //public ArrayList<ArrayList> receivedStudyAndReport = new Arraylist();
+            //receivedStudyAndReport.append(receivedStudyInstanceUIDs);
+            
     }
     
-    public ArrayList<String> doFindScu(String searchPatientName){
+    public AttributeList doFindScu(String searchPatientName){
         try {
             SpecificCharacterSet specificCharacterSet = new SpecificCharacterSet((String[])null);
             AttributeList identifier = new AttributeList();
@@ -69,14 +77,14 @@ public class ClientUpload {
             identifier.putNewAttribute(TagFromName.StudyDate);
             
             //retrieve all studies belonging to patient with name 'Bowen'
-            new FindSOPClassSCU("localhost",
-                    4242,
-                    "ORTHANC",
+            new FindSOPClassSCU("192.168.3.109",
+                    443,
+                    "STORESCP109",
                     "FINDSCU",
                     SOPClass.StudyRootQueryRetrieveInformationModelFind,
                     identifier,
                     handler);
-                return handler.receivedStudyInstanceUIDs;
+                return identifier;
         
         } catch (DicomException | DicomNetworkException | IOException ex) {
             Logger.getLogger(DICOMViewer.class.getName()).log(Level.SEVERE, null, ex);
