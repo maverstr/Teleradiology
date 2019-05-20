@@ -12,6 +12,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import client.DICOMSCU;
+import com.pixelmed.dicom.Attribute;
+import com.pixelmed.dicom.AttributeTag;
+import com.pixelmed.dicom.LongTextAttribute;
+import com.pixelmed.dicom.TagFromName;
 import com.pixelmed.network.DicomNetworkException;
 import java.io.IOException;
 
@@ -23,15 +27,17 @@ public class WriteReport extends javax.swing.JFrame {
     
     private static Report rep;
     private static AttributeList al;
+    private static String reportPath;
     private static final DICOMSCU scu =new DICOMSCU();
     
     /**
      * Creates new form WriteReport
      * @param alist
      */
-    public WriteReport(AttributeList alist) {
+    public WriteReport(AttributeList alist, String path) {
         initComponents();
-        al = alist;   
+        al = alist;
+        reportPath = path;
     }
     public void CloseFrame() {
         super.dispose();
@@ -106,7 +112,9 @@ public class WriteReport extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null,"Il faut écrire un rapport avant de sauver !" );
         } else {
             try {
-                rep = new Report(al,s);
+                { AttributeTag t = TagFromName.TextValue; Attribute a = new LongTextAttribute(t); a.addValue(s); al.put(t,a); }
+                rep = new Report(al, reportPath);
+                System.out.println("Ligne avec le rapport exécutée");
             } catch (DicomException ex) {
                 Logger.getLogger(WriteReport.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -150,8 +158,9 @@ public class WriteReport extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
-                new WriteReport(al).setVisible(true);
+                new WriteReport(al,reportPath).setVisible(true);
             }
         });
     }

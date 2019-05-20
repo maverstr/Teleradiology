@@ -206,13 +206,15 @@ public class MainWindow extends javax.swing.JFrame {
             try {
                 dis = new DicomInputStream(imageFile);
                 AttributeList alist = new AttributeList();
+                AttributeList alist2 = new AttributeList();//pour créer une AL from scratch
                 alist.read(dis);
-                al.put(TagFromName.StudyInstanceUID, alist.get(TagFromName.StudyInstanceUID)); //Pas très bonne pratique, au mieux, on devrait prendre tout l'AL
-                al.put(TagFromName.SeriesInstanceUID,alist.get(TagFromName.SeriesInstanceUID));//mais ça ne marchait pas du coup on prend juste ce qui est nécessaire
-                al.put(TagFromName.PatientName,alist.get(TagFromName.PatientName)); //TO DO : rajouter le patient ID
-                al.put(TagFromName.SOPInstanceUID, alist.get(TagFromName.SOPInstanceUID));
-                { AttributeTag t = TagFromName.SOPClassUID; Attribute a = new CodeStringAttribute(t); a.addValue(SOPClass.BasicTextSRStorage); al.put(t,a); }
-                WriteReport reportWindow = new WriteReport(al);
+                alist2.put(TagFromName.StudyInstanceUID, alist.get(TagFromName.StudyInstanceUID)); //Pas très bonne pratique, au mieux, on devrait prendre tout l'AL
+                alist2.put(TagFromName.SeriesInstanceUID,alist.get(TagFromName.SeriesInstanceUID));//mais ça ne marchait pas du coup on prend juste ce qui est nécessaire
+                alist2.put(TagFromName.PatientName,alist.get(TagFromName.PatientName)); //TO DO : rajouter le patient ID
+                alist2.put(TagFromName.SOPInstanceUID, alist.get(TagFromName.SOPInstanceUID));
+                //{ AttributeTag t = TagFromName.TransferSyntaxUID; Attribute a = new CodeStringAttribute(t); a.addValue("1.2.840.10008.1.2.1"); alist2.put(t,a); }
+                { AttributeTag t = TagFromName.SOPClassUID; Attribute a = new CodeStringAttribute(t); a.addValue(SOPClass.BasicTextSRStorage); alist2.put(t,a); }
+                WriteReport reportWindow = new WriteReport(alist, filePath); //on va créer un rapport avec toute l'AL qui provient du fichier dcm original
                 reportWindow.setVisible(true);
             } catch (IOException | DicomException ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
