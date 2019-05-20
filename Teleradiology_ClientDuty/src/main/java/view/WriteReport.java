@@ -21,7 +21,7 @@ public class WriteReport extends javax.swing.JFrame {
     
     private static Report rep;
     private static AttributeList al;
-    private static DICOMSCU scu =new DICOMSCU();
+    private static final DICOMSCU scu =new DICOMSCU();
     
     /**
      * Creates new form WriteReport

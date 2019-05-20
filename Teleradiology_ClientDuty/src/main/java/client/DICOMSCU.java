@@ -126,12 +126,12 @@ public class DICOMSCU {
         return null;
     }
     
-    public void doMoveToMeScu(String studyInstanceUID) {
+    public void doMoveToMeScu(String studyInstanceUID) { //A NE PAS UTILISER ? ou bien il faut modifier !!
         try {
             AttributeList identifier = new AttributeList();
             { AttributeTag t = TagFromName.QueryRetrieveLevel; Attribute a = new CodeStringAttribute(t); a.addValue("STUDY"); identifier.put(t,a); }
             { AttributeTag t = TagFromName.StudyInstanceUID; Attribute a = new UniqueIdentifierAttribute(t); a.addValue(studyInstanceUID); identifier.put(t,a); }
-            new MoveSOPClassSCU("192.168.3.109",443,"STORESCP109","MOVESCU","STORESCP",SOPClass.StudyRootQueryRetrieveInformationModelMove,identifier);
+            new MoveSOPClassSCU("localhost",443,"STORESCP109","MOVESCU","STORESCP",SOPClass.StudyRootQueryRetrieveInformationModelMove,identifier);
         }
         catch (DicomException | DicomNetworkException | IOException | ClassCastException | NullPointerException e) {
             System.err.println(e);
@@ -143,7 +143,7 @@ public class DICOMSCU {
             AttributeList identifier = new AttributeList();
             { AttributeTag t = TagFromName.QueryRetrieveLevel; Attribute a = new CodeStringAttribute(t); a.addValue("STUDY"); identifier.put(t,a); }
             { Attribute a = al.get(TagFromName.StudyInstanceUID); identifier.put(a); }
-            new MoveSOPClassSCU("localhost",4242,"ORTHANC","MOVESCU","STORESCP",SOPClass.StudyRootQueryRetrieveInformationModelMove,identifier);
+            new MoveSOPClassSCU("192.168.3.109",443,"STORESCP109","MOVESCU","STORESCP109",SOPClass.StudyRootQueryRetrieveInformationModelMove,identifier);
         }
         catch (DicomException | DicomNetworkException | IOException | ClassCastException | NullPointerException e) {
             System.err.println(e);
