@@ -11,6 +11,8 @@ import com.pixelmed.dicom.AttributeTag;
 import com.pixelmed.dicom.AttributeTagAttribute;
 import com.pixelmed.dicom.CodeStringAttribute;
 
+import java.util.*;
+
 import com.pixelmed.dicom.DicomException;
 import com.pixelmed.dicom.PersonNameAttribute;
 import com.pixelmed.dicom.SetOfDicomFiles;
@@ -129,6 +131,8 @@ public class DICOMServer {
         private String nameToBeSearched;
         boolean stop = false;
         
+        private int counter = 0;
+        
         @Override
         public void performQuery(String affectedSOPClassUID, AttributeList al, boolean bln) {
             System.out.println("C-Find Received");
@@ -153,8 +157,11 @@ public class DICOMServer {
             String patientName=nameToBeSearched;
             System.out.println("searching for: "+ patientName);
             patient = patientController.findPatientByName(patientName);
-            Imagingstudy study = studyCtrl.findImagingstudyByPatientID(patient.getIdPatient());
-            System.out.println("found: " + patient);
+            
+            List studyList = studyCtrl.findImagingstudyByPatientID(patient.getIdPatient());
+            if(counter <studyList.size()){
+                Imagingstudy study = (Imagingstudy) studyList.get(counter);
+                System.out.println("found: " + patient);
                 try {
                     patientList.putNewAttribute(TagFromName.PatientName).addValue(patient.getPerson().getNameGiven());
                     patientList.putNewAttribute(TagFromName.StudyInstanceUID).addValue(study.getUid());
@@ -165,7 +172,15 @@ public class DICOMServer {
                 } catch (DicomException ex) {
                     Logger.getLogger(DICOMServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            stop = true;
+                counter++;
+            }
+            else{
+                stop = true;
+                counter =0;
+                return null;
+            }
+
+            //stop = true;
             System.out.println("patient list: "+ patientList);
 
             return patientList;
@@ -264,36 +279,46 @@ public class DICOMServer {
                     String patientName=nameToBeSearched;
                     System.out.println("searching for: "+ patientName);
                     patient = patientController.findPatientByName(patientName);
-                    Imagingstudy study = studyCtrl.findImagingstudyByPatientID(patient.getIdPatient());
-                    System.out.println("found: " + patient);
-                    String studyUID = study.getUid();
-                    System.out.println("Study UID: " + studyUID);                    
-                    
-                    File dir = new File("D:\\Users\\INFO-H-400\\Documents\\"+studyUID+"\\");
-                    System.out.println("is a directory?: "+dir.isDirectory());
-                    System.out.println("dir :" +dir);
-                    
+                    List studyList = studyCtrl.findImagingstudyByPatientID(patient.getIdPatient());
+                    for (Object stud:studyList){
+                        Imagingstudy study = (Imagingstudy) stud;
+                        System.out.println("found: " + patient);
+                        String studyUID = study.getUid();
+                        System.out.println("Study UID: " + studyUID);                    
 
-                    File[] directoryListing = dir.listFiles();
-                    if (directoryListing != null) {
-                      for (File child : directoryListing) {
-                          try {
-                              responseList.add(child);
-                              System.out.println("file child exists ?: "+child.exists());
 
-                          } catch (IOException ex) {
-                              Logger.getLogger(DICOMServer.class.getName()).log(Level.SEVERE, null, ex);
+                        List<String> splitted = Arrays.asList(studyUID.split("\\s*\\.\\s*"));
+                        Collections.reverse(splitted);
+                        String path = String.join("\\\\", splitted);
+                        System.out.println("path: " + path);                    
+
+
+                        File dir = new File("D:\\Users\\INFO-H-400\\Documents\\"+path+"\\");
+                        System.out.println("is a directory?: "+dir.isDirectory());
+
+
+                        File[] directoryListing = dir.listFiles();
+                        if (directoryListing != null) {
+                          for (File child : directoryListing) {
+                              try {
+                                  responseList.add(child);
+                                  System.out.println("file child exists ?: "+child.exists());
+
+                              } catch (IOException ex) {
+                                  Logger.getLogger(DICOMServer.class.getName()).log(Level.SEVERE, null, ex);
+                              }
                           }
-                      }
-                    } else {
-                      System.out.println("pas un directory c'est la merde");
+                        } else {
+                          System.out.println("pas un directory c'est la merde");
 
-                      // Handle the case where dir is not really a directory.
-                      // Checking dir.isDirectory() above would not be sufficient
-                      // to avoid race conditions with another process that deletes
-                      // directories.
+                          // Handle the case where dir is not really a directory.
+                          // Checking dir.isDirectory() above would not be sufficient
+                          // to avoid race conditions with another process that deletes
+                          // directories.
+                        }
+
+
                     }
-
 
                     stop = true;
                     System.out.println("response list : "+responseList.toString() + " stop");
@@ -417,6 +442,8 @@ public class DICOMServer {
                 instance.setSeries(series);
                 instanceCtrl.create(instance);
             }
+            
+            return;
             
     }
 
