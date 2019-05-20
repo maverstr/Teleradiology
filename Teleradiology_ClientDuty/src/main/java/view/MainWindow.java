@@ -206,6 +206,7 @@ public class MainWindow extends javax.swing.JFrame {
                 al.put(TagFromName.StudyInstanceUID, alist.get(TagFromName.StudyInstanceUID)); //Pas très bonne pratique, au mieux, on devrait prendre tout l'AL
                 al.put(TagFromName.SeriesInstanceUID,alist.get(TagFromName.SeriesInstanceUID));//mais ça ne marchait pas du coup on prend juste ce qui est nécessaire
                 al.put(TagFromName.PatientName,alist.get(TagFromName.PatientName)); //TO DO : rajouter le patient ID
+                al.put(TagFromName.SOPInstanceUID, alist.get(TagFromName.SOPInstanceUID));
                 WriteReport reportWindow = new WriteReport(al);
                 reportWindow.setVisible(true);
             } catch (IOException | DicomException ex) {

@@ -26,6 +26,7 @@ import com.pixelmed.network.GetSOPClassSCU;
 import com.pixelmed.network.IdentifierHandler;
 import com.pixelmed.network.MoveSOPClassSCU;
 import com.pixelmed.network.ReceivedObjectHandler;
+import com.pixelmed.network.StorageSOPClassSCU;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -148,6 +149,21 @@ public class DICOMSCU {
         catch (DicomException | DicomNetworkException | IOException | ClassCastException | NullPointerException e) {
             System.err.println(e);
         }
+    }
+    
+    public void doStore(AttributeList al, Report rep) throws DicomException, DicomNetworkException, IOException{
+        AttributeList identifier = new AttributeList();
+        {
+            AttributeTag t = TagFromName.QueryRetrieveLevel;
+            Attribute a = new CodeStringAttribute(t);
+            a.addValue("STUDY");
+            identifier.put(t, a);
+        }
+        {
+            Attribute a = al.get(TagFromName.StudyInstanceUID);
+            identifier.put(a);
+        }
+        new StorageSOPClassSCU("192.168.3.109",443,"STORESCP109","STORESCU",rep.getReportPath(),SOPClass.StudyRootQueryRetrieveInformationModelGet,al.get(TagFromName.SOPInstanceUID).getDelimitedStringValuesOrEmptyString(),0);
     }
     
     /*public void doGetScu(String studyInstanceUID){
