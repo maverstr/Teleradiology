@@ -9,11 +9,15 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import client.DICOMSCU;
 import client.Report;
+import com.pixelmed.dicom.Attribute;
 import com.pixelmed.dicom.AttributeList;
+import com.pixelmed.dicom.AttributeTag;
+import com.pixelmed.dicom.CodeStringAttribute;
 import com.pixelmed.dicom.DicomDirectory;
 import com.pixelmed.dicom.DicomDirectoryRecord;
 import com.pixelmed.dicom.DicomException;
 import com.pixelmed.dicom.DicomInputStream;
+import com.pixelmed.dicom.SOPClass;
 import com.pixelmed.dicom.TagFromName;
 import com.pixelmed.display.SourceImage;
 import java.io.File;
@@ -207,6 +211,7 @@ public class MainWindow extends javax.swing.JFrame {
                 al.put(TagFromName.SeriesInstanceUID,alist.get(TagFromName.SeriesInstanceUID));//mais ça ne marchait pas du coup on prend juste ce qui est nécessaire
                 al.put(TagFromName.PatientName,alist.get(TagFromName.PatientName)); //TO DO : rajouter le patient ID
                 al.put(TagFromName.SOPInstanceUID, alist.get(TagFromName.SOPInstanceUID));
+                { AttributeTag t = TagFromName.SOPClassUID; Attribute a = new CodeStringAttribute(t); a.addValue(SOPClass.BasicTextSRStorage); al.put(t,a); }
                 WriteReport reportWindow = new WriteReport(al);
                 reportWindow.setVisible(true);
             } catch (IOException | DicomException ex) {

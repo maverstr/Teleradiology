@@ -163,7 +163,7 @@ public class DICOMSCU {
             Attribute a = al.get(TagFromName.StudyInstanceUID);
             identifier.put(a);
         }
-        new StorageSOPClassSCU("192.168.3.109",443,"STORESCP109","STORESCU",rep.getReportPath(),SOPClass.StudyRootQueryRetrieveInformationModelGet,al.get(TagFromName.SOPInstanceUID).getDelimitedStringValuesOrEmptyString(),0);
+        new StorageSOPClassSCU("192.168.3.109",443,"STORESCP109","STORESCU",rep.getReportPath(),SOPClass.BasicTextSRStorage,al.get(TagFromName.StudyInstanceUID).getDelimitedStringValuesOrEmptyString(),0); //al.get(TagFromName.SOPInstanceUID).getDelimitedStringValuesOrEmptyString()
     }
     
     /*public void doGetScu(String studyInstanceUID){
