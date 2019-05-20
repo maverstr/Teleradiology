@@ -17,6 +17,8 @@ import com.pixelmed.dicom.SetOfDicomFiles;
 import com.pixelmed.dicom.SetOfDicomFiles.DicomFile;
 import com.pixelmed.dicom.StoredFilePathStrategy;
 import static com.pixelmed.dicom.StoredFilePathStrategy.BYSOPINSTANCEUIDCOMPONENTFOLDERS;
+import static com.pixelmed.dicom.StoredFilePathStrategy.BYSOPINSTANCEUIDINSINGLEFOLDER;
+import com.pixelmed.dicom.StoredFilePathStrategySingleFolder;
 import com.pixelmed.dicom.TagFromName;
 import com.pixelmed.dicom.UniqueIdentifierAttribute;
 import com.pixelmed.network.DicomNetworkException;
@@ -55,6 +57,7 @@ import model.Patient;
 import model.Patientdicomidentifier;
 import model.Person;
 import model.Series;
+import org.eclipse.persistence.internal.helper.Helper;
 
 /**
  *
@@ -81,7 +84,7 @@ public class DICOMServer {
     
     public DICOMServer() throws IOException{ 
         //Starting server
-        startServer(443, "STORESCP109",new File("D:\\Users\\INFO-H-400\\Documents"), BYSOPINSTANCEUIDCOMPONENTFOLDERS);
+        startServer(443, "STORESCP109",new File("D:\\Users\\INFO-H-400\\Documents"), null);
     }
     
    private void startServer(int port, String aetitle, File storePath, StoredFilePathStrategy sfps) throws IOException{
@@ -103,6 +106,7 @@ public class DICOMServer {
        );
        System.out.println("server started");
        t.start();
+       
 
     }
    
@@ -267,6 +271,8 @@ public class DICOMServer {
                     
                     File dir = new File("D:\\Users\\INFO-H-400\\Documents\\"+studyUID+"\\");
                     System.out.println("is a directory?: "+dir.isDirectory());
+                    System.out.println("dir :" +dir);
+                    
 
                     File[] directoryListing = dir.listFiles();
                     if (directoryListing != null) {
@@ -370,7 +376,6 @@ public class DICOMServer {
                 per.setNameFamily(patientName);
                 per.setGender(patientSex);
                 per.setHospitalid(hospitalID);
-                System.out.println("hospital : "+hospitalID);
                 SimpleDateFormat fmt = new SimpleDateFormat("yyyymmdd");
                 try{
                     per.setBirthdate(fmt.parse(patientBirthdate));
@@ -412,7 +417,7 @@ public class DICOMServer {
                 instance.setSeries(series);
                 instanceCtrl.create(instance);
             }
-
+            
     }
 
 
