@@ -309,7 +309,7 @@ public class ImagingstudyJpaController implements Serializable {
         EntityManager em = getEntityManager();
         try {
             System.out.println("trying to find");
-            List returnList = (List) em.createNamedQuery("Imagingstudy.findByPatient").setParameter("patientId", id).getResultList(); //always return the first study
+            List returnList = (List) em.createNamedQuery("Imagingstudy.findByPatient").setParameter("patientId", id).getResultList(); 
             return returnList;
         } catch(NoResultException e) {
             System.out.println("no study found");

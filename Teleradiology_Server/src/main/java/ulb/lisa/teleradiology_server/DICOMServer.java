@@ -419,17 +419,17 @@ public class DICOMServer {
             }
             Imagingstudy study = studyCtrl.findImagingstudyByUid(studyUID);
             if(study == null){
-                study = new Imagingstudy();;
-                study.setUid(studyUID);
+                study = new Imagingstudy();
+                study.setUid(instanceUID);
                 study.setPatient(pat);
                 study.setDescription(studyDescription);
                 studyCtrl.create(study);
         }
             
-            Series series = seriesCtrl.findSeriesByUid(studyUID);
+            Series series = seriesCtrl.findSeriesByUid(seriesUID);
             if(series == null){
                 series = new Series();
-                series.setUid(studyUID);
+                series.setUid(seriesUID);
                 series.setModality(seriesModality);
                 series.setDescription(studyDescription);
                 series.setStudy(study);
@@ -438,7 +438,7 @@ public class DICOMServer {
             Instance instance = instanceCtrl.findInstanceByUid(instanceUID);
             if (instance == null) {
                 instance = new Instance();
-                instance.setUid(studyUID);
+                instance.setUid(instanceUID);
                 instance.setSeries(series);
                 instanceCtrl.create(instance);
             }
