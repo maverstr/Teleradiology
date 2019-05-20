@@ -114,17 +114,32 @@ public class ClientUpload {
             System.err.println(e);
         }
     }
-    
+    /*public void doStore(String ImagePath) throws DicomException, DicomNetworkException, IOException{
+        AttributeList identifier = new AttributeList();
+        {
+            AttributeTag t = TagFromName.QueryRetrieveLevel;
+            Attribute a = new CodeStringAttribute(t);
+            a.addValue("STUDY");
+            identifier.put(t, a);
+        }
+        {
+            AttributeTag t = TagFromName.StudyInstanceUID;
+            Attribute a = new CodeStringAttribute(t);
+            a.addValue(ImagePath);
+            identifier.put(t, a);
+        }
+        new StorageSOPClassSCU("192.168.3.109",443,"STORESCP109","STORESCU",ImagePath,SOPClass.StudyRootQueryRetrieveInformationModelGet,identifier.get(TagFromName.StudyInstanceUID).getDelimitedStringValuesOrEmptyString(),0);
+    }*/
     public void doGetScu(String studyInstanceUID) { //A NE PAS UTILISER ? ou bien il faut modifier !!
-        try {
+        /*try {
             AttributeList identifier = new AttributeList();
             { AttributeTag t = TagFromName.QueryRetrieveLevel; Attribute a = new CodeStringAttribute(t); a.addValue("STUDY"); identifier.put(t,a); }
             { AttributeTag t = TagFromName.StudyInstanceUID; Attribute a = new UniqueIdentifierAttribute(t); a.addValue(studyInstanceUID); identifier.put(t,a); }
             { AttributeTag t = TagFromName.PatientName; Attribute a = new UniqueIdentifierAttribute(t); a.addValue(studyInstanceUID); identifier.put(t,a); }
-            new MoveSOPClassSCU("192.168.3.109",443,"STORESCP109","MOVESCU","STORESCP",SOPClass.StudyRootQueryRetrieveInformationModelMove,identifier,0);
+            new GetSOPClassSCU("192.168.3.109",443,"STORESCP109","MOVESCU","STORESCP",SOPClass.StudyRootQueryRetrieveInformationModelMove,identifier,0);
         }
         catch (DicomException | DicomNetworkException | IOException | ClassCastException | NullPointerException e) {
             System.err.println(e);
-        }
+        }*/
     }
 }

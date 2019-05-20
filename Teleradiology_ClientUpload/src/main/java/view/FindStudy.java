@@ -34,6 +34,7 @@ public class FindStudy extends javax.swing.JFrame {
     ClientUpload scu = new ClientUpload();
     AttributeList identifier;
     File DICOMPath;
+    private String studyToMove;
     HashMap<String, AttributeList> identifiers = new HashMap();
     
     /** Creates new form FindStudy */
@@ -64,6 +65,8 @@ public class FindStudy extends javax.swing.JFrame {
         ReportReadLabel = new javax.swing.JLabel();
         doCGetButton = new javax.swing.JButton();
         SelectDicomFile = new javax.swing.JButton();
+        dicomImageLabel = new javax.swing.JLabel();
+        ImageLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -109,6 +112,9 @@ public class FindStudy extends javax.swing.JFrame {
             }
         });
 
+        ImageLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        ImageLabel.setText("Image");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -116,57 +122,69 @@ public class FindStudy extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(ReportLabel)
+                        .addGap(590, 590, 590))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(48, 48, 48)
+                                .addComponent(doCGetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(32, 32, 32)
+                                .addComponent(SelectDicomFile)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(dicomImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(284, 284, 284))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(SearchPatientReportLabel)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(35, 35, 35)
-                                        .addComponent(SelectDicomFile))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(48, 48, 48)
-                                        .addComponent(doCGetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(27, 27, 27)
-                                .addComponent(ReportReadLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(PatientNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(33, 33, 33)
+                                        .addComponent(doCFindButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(670, 670, 670)
+                                .addComponent(ImageLabel))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(SearchPatientReportLabel)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(PatientNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(33, 33, 33)
-                        .addComponent(doCFindButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 337, Short.MAX_VALUE)
-                        .addComponent(ReportLabel)
-                        .addGap(171, 171, 171))))
+                                .addGap(645, 645, 645)
+                                .addComponent(ReportReadLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 775, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(233, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(SearchPatientReportLabel)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(ImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(dicomImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                .addComponent(ReportLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ReportReadLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(60, 60, 60))
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(PatientNameLabel)
-                            .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(doCFindButton1)
-                            .addComponent(ReportLabel))
-                        .addGap(18, 18, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
-                            .addComponent(ReportReadLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(46, 46, 46))
-                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(SearchPatientReportLabel)
                         .addGap(117, 117, 117)
                         .addComponent(doCGetButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(SelectDicomFile)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(SelectDicomFile))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(70, 70, 70)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(PatientNameLabel)
+                            .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(doCFindButton1))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 667, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -276,11 +294,33 @@ public class FindStudy extends javax.swing.JFrame {
             try {
                 DICOMPath = jfc.getSelectedFile();
                 System.out.println(DICOMPath.getAbsolutePath());
+                System.out.println("a");
                 dis = new DicomInputStream(DICOMPath);
+                System.out.println("b");
                 AttributeList al = new AttributeList();
+                System.out.println("c");
                 al.read(dis);
+                System.out.println("d");
                 String x = al.get(TagFromName.TextValue).getSingleStringValueOrEmptyString();
+                System.out.println("e");
                 ReportReadLabel.setText(x);
+                System.out.println("f");
+                if( al.get(TagFromName.DirectoryRecordType).getSingleStringValueOrEmptyString().equals("IMAGE") ){
+            try {
+                
+                String imagePath = al.get(TagFromName.ReferencedFileID).getDelimitedStringValuesOrEmptyString();
+                
+                File imageFile = new File(DICOMPath.getParent(), imagePath);
+                
+                System.out.println(imagePath);
+                System.out.println(imageFile.getAbsolutePath());
+                SourceImage sImg = new SourceImage(imageFile.getAbsolutePath()); // path = path to the DICOM file containing the image data. Note that the DICOMDIR doesn't have the image data!
+                dicomImageLabel.setIcon(new ImageIcon(sImg.getBufferedImage())); // Shows image in a jLabel
+            } catch (IOException | DicomException ex) {
+                Logger.getLogger(DICOMViewer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
             } catch (IOException | DicomException ex) {
                 Logger.getLogger(DICOMViewer.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
@@ -330,12 +370,14 @@ public class FindStudy extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel ImageLabel;
     private javax.swing.JLabel PatientNameLabel;
     private javax.swing.JLabel ReportLabel;
     private javax.swing.JLabel ReportReadLabel;
     private javax.swing.JLabel SearchPatientReportLabel;
     private javax.swing.JButton SelectDicomFile;
     private javax.swing.JTextField dcmPatientNameField;
+    private javax.swing.JLabel dicomImageLabel;
     private javax.swing.JButton doCFindButton1;
     private javax.swing.JButton doCGetButton;
     private javax.swing.JScrollPane jScrollPane3;
