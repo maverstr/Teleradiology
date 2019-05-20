@@ -308,7 +308,7 @@ public class PatientJpaController implements Serializable {
 
             //return em.find(Patient.class, name);
             
-            //Patient patient = (Patient) em.createNamedQuery("Patient.findByIdPatient").setParameter("idPatient", 4).getSingleResult();
+            //Patient patient = (Patient) em.createNamedQuery("Patient.findByIdPatient").setParameter("idPatient", 5).getSingleResult();
             Patient patient = (Patient) em.createNamedQuery("Patient.findByName").setParameter("nameGiven", name).getSingleResult(); 
             return patient;
         } catch(NoResultException e) {

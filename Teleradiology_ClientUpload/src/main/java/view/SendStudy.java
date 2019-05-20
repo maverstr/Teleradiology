@@ -53,7 +53,7 @@ public class SendStudy extends javax.swing.JFrame {
         dicomdirTree = new javax.swing.JTree();
         ImageLabel = new javax.swing.JLabel();
         dicomImageLabel = new javax.swing.JLabel();
-        moveSelectedStudyButton1 = new javax.swing.JButton();
+        storeSelectedStudyButton1 = new javax.swing.JButton();
         SearchPatientStudyLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -76,10 +76,10 @@ public class SendStudy extends javax.swing.JFrame {
         ImageLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         ImageLabel.setText("Image");
 
-        moveSelectedStudyButton1.setText("C-MOVE");
-        moveSelectedStudyButton1.addActionListener(new java.awt.event.ActionListener() {
+        storeSelectedStudyButton1.setText("C-STORE");
+        storeSelectedStudyButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                moveSelectedStudyButton1moveSelectedStudyButtonActionPerformed(evt);
+                storeSelectedStudyButton1moveSelectedStudyButtonActionPerformed(evt);
             }
         });
 
@@ -100,7 +100,7 @@ public class SendStudy extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(moveSelectedStudyButton1)
+                                .addComponent(storeSelectedStudyButton1)
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(SelectDicomdir)
                                     .addGap(370, 370, 370)
@@ -124,7 +124,7 @@ public class SendStudy extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
                     .addComponent(dicomImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(moveSelectedStudyButton1)
+                .addComponent(storeSelectedStudyButton1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -165,8 +165,8 @@ public class SendStudy extends javax.swing.JFrame {
         //dicomImageTextPane1.setText(al.toString());
         if( al.get(TagFromName.DirectoryRecordType).getSingleStringValueOrEmptyString().equals("STUDY") ){
             System.out.println("bla");
-            studyToMove = al.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString();
-            System.out.println(studyToMove);
+            //studyToMove = al.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString();
+            //System.out.println(studyToMove);
         }
 
         if( al.get(TagFromName.DirectoryRecordType).getSingleStringValueOrEmptyString().equals("IMAGE") ){
@@ -177,7 +177,8 @@ public class SendStudy extends javax.swing.JFrame {
                 File imageFile = new File(dicomdirPath.getParent(), imagePath);
 
                 System.out.println(imagePath);
-                System.out.println(imageFile.getAbsolutePath());
+                studyToMove = imageFile.getAbsolutePath();
+                System.out.println(studyToMove);
                 SourceImage sImg = new SourceImage(imageFile.getAbsolutePath()); // path = path to the DICOM file containing the image data. Note that the DICOMDIR doesn't have the image data!
                 dicomImageLabel.setIcon(new ImageIcon(sImg.getBufferedImage())); // Shows image in a jLabel
             } catch (IOException | DicomException ex) {
@@ -187,7 +188,7 @@ public class SendStudy extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_dicomdirTreeValueChanged
 
-    private void moveSelectedStudyButton1moveSelectedStudyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveSelectedStudyButton1moveSelectedStudyButtonActionPerformed
+    private void storeSelectedStudyButton1moveSelectedStudyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_storeSelectedStudyButton1moveSelectedStudyButtonActionPerformed
         // TODO add your handling code here:
         //String selectedUID = receivedUIDList.getSelectedValue();
         String selectedUID = studyToMove;
@@ -197,9 +198,9 @@ public class SendStudy extends javax.swing.JFrame {
         /*DicomDirectoryRecord ddr = (DicomDirectoryRecord) selectedObject;
         AttributeList al = ddr.getAttributeList();*/
         System.out.println("j'ai récupéré la valeur");
-        scu.doMoveScu(selectedUID);
+        scu.doStoreScu(selectedUID);
         System.out.println("Je l'ai envoyé sur l'ordi");
-    }//GEN-LAST:event_moveSelectedStudyButton1moveSelectedStudyButtonActionPerformed
+    }//GEN-LAST:event_storeSelectedStudyButton1moveSelectedStudyButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -243,6 +244,6 @@ public class SendStudy extends javax.swing.JFrame {
     private javax.swing.JLabel dicomImageLabel;
     private javax.swing.JTree dicomdirTree;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JButton moveSelectedStudyButton1;
+    private javax.swing.JButton storeSelectedStudyButton1;
     // End of variables declaration//GEN-END:variables
 }

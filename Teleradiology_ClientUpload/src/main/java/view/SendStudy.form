@@ -34,7 +34,7 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                              <Component id="moveSelectedStudyButton1" min="-2" max="-2" attributes="0"/>
+                              <Component id="storeSelectedStudyButton1" min="-2" max="-2" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Component id="SelectDicomdir" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="370" max="-2" attributes="0"/>
@@ -67,7 +67,7 @@
                   <Component id="dicomImageLabel" max="32767" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="moveSelectedStudyButton1" min="-2" max="-2" attributes="0"/>
+              <Component id="storeSelectedStudyButton1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -111,12 +111,12 @@
     </Component>
     <Component class="javax.swing.JLabel" name="dicomImageLabel">
     </Component>
-    <Component class="javax.swing.JButton" name="moveSelectedStudyButton1">
+    <Component class="javax.swing.JButton" name="storeSelectedStudyButton1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="C-MOVE"/>
+        <Property name="text" type="java.lang.String" value="C-STORE"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="moveSelectedStudyButton1moveSelectedStudyButtonActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="storeSelectedStudyButton1moveSelectedStudyButtonActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="SearchPatientStudyLabel">
