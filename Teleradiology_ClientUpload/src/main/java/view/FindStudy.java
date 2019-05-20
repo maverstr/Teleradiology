@@ -11,12 +11,20 @@ import com.pixelmed.dicom.Attribute;
 import com.pixelmed.dicom.AttributeList;
 import com.pixelmed.dicom.AttributeTag;
 import com.pixelmed.dicom.DicomDirectoryRecord;
+import com.pixelmed.dicom.DicomException;
 import com.pixelmed.dicom.DicomInputStream;
 import com.pixelmed.dicom.TagFromName;
+import com.pixelmed.display.SourceImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -25,7 +33,7 @@ import javax.swing.DefaultListModel;
 public class FindStudy extends javax.swing.JFrame {
     ClientUpload scu = new ClientUpload();
     AttributeList identifier;
-    
+    File DICOMPath;
     HashMap<String, AttributeList> identifiers = new HashMap();
     
     /** Creates new form FindStudy */
@@ -54,6 +62,8 @@ public class FindStudy extends javax.swing.JFrame {
         SearchPatientReportLabel = new javax.swing.JLabel();
         ReportLabel = new javax.swing.JLabel();
         ReportReadLabel = new javax.swing.JLabel();
+        doCGetButton = new javax.swing.JButton();
+        SelectDicomFile = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -85,6 +95,20 @@ public class FindStudy extends javax.swing.JFrame {
         ReportLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         ReportLabel.setText("Report");
 
+        doCGetButton.setText("C-GET");
+        doCGetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                doCGetButtondoCFindButtonActionPerformed(evt);
+            }
+        });
+
+        SelectDicomFile.setText("Select DICOM");
+        SelectDicomFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SelectDicomFileActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -96,36 +120,53 @@ public class FindStudy extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(90, 90, 90)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(35, 35, 35)
+                                        .addComponent(SelectDicomFile))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(48, 48, 48)
+                                        .addComponent(doCGetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(27, 27, 27)
                                 .addComponent(ReportReadLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(SearchPatientReportLabel))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(SearchPatientReportLabel)
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(PatientNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(48, 48, 48)
+                        .addGap(33, 33, 33)
                         .addComponent(doCFindButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 212, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 337, Short.MAX_VALUE)
                         .addComponent(ReportLabel)
-                        .addGap(176, 176, 176))))
+                        .addGap(171, 171, 171))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(SearchPatientReportLabel)
-                .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(PatientNameLabel)
-                    .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(doCFindButton1)
-                    .addComponent(ReportLabel))
-                .addGap(18, 18, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(ReportReadLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(PatientNameLabel)
+                            .addComponent(dcmPatientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(doCFindButton1)
+                            .addComponent(ReportLabel))
+                        .addGap(18, 18, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                            .addComponent(ReportReadLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(46, 46, 46))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(117, 117, 117)
+                        .addComponent(doCGetButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(SelectDicomFile)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
@@ -220,6 +261,39 @@ public class FindStudy extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_dcmPatientNameFieldActionPerformed
 
+    private void doCGetButtondoCFindButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doCGetButtondoCFindButtonActionPerformed
+        // TODO add your handling code here:
+        String searchName = dcmPatientNameField.getText();
+        scu.doGetScu(searchName);
+    }//GEN-LAST:event_doCGetButtondoCFindButtonActionPerformed
+
+    private void SelectDicomFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectDicomFileActionPerformed
+        // TODO add your handling code here:
+        JFileChooser jfc = new JFileChooser("D:\\Users\\INFO-H-400\\Downloads\\DICOMDIR\\DICOMDIR");
+
+        if( jfc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION ){
+            DicomInputStream dis = null;
+            try {
+                DICOMPath = jfc.getSelectedFile();
+                System.out.println(DICOMPath.getAbsolutePath());
+                dis = new DicomInputStream(DICOMPath);
+                AttributeList al = new AttributeList();
+                al.read(dis);
+                String x = al.get(TagFromName.TextValue).getSingleStringValueOrEmptyString();
+                ReportReadLabel.setText(x);
+            } catch (IOException | DicomException ex) {
+                Logger.getLogger(DICOMViewer.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    dis.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(DICOMViewer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        }
+    }//GEN-LAST:event_SelectDicomFileActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -260,8 +334,10 @@ public class FindStudy extends javax.swing.JFrame {
     private javax.swing.JLabel ReportLabel;
     private javax.swing.JLabel ReportReadLabel;
     private javax.swing.JLabel SearchPatientReportLabel;
+    private javax.swing.JButton SelectDicomFile;
     private javax.swing.JTextField dcmPatientNameField;
     private javax.swing.JButton doCFindButton1;
+    private javax.swing.JButton doCGetButton;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JList<String> receivedUIDList;
     // End of variables declaration//GEN-END:variables

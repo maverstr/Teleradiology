@@ -16,6 +16,7 @@ import com.pixelmed.dicom.TagFromName;
 import com.pixelmed.dicom.UniqueIdentifierAttribute;
 import com.pixelmed.network.DicomNetworkException;
 import com.pixelmed.network.FindSOPClassSCU;
+import com.pixelmed.network.GetSOPClassSCU;
 import com.pixelmed.network.IdentifierHandler;
 import com.pixelmed.network.MoveSOPClassSCU;
 import com.pixelmed.network.StorageSOPClassSCU;
@@ -110,6 +111,19 @@ public class ClientUpload {
             System.out.println("D");
         }
         catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+    
+    public void doGetScu(String studyInstanceUID) { //A NE PAS UTILISER ? ou bien il faut modifier !!
+        try {
+            AttributeList identifier = new AttributeList();
+            { AttributeTag t = TagFromName.QueryRetrieveLevel; Attribute a = new CodeStringAttribute(t); a.addValue("STUDY"); identifier.put(t,a); }
+            { AttributeTag t = TagFromName.StudyInstanceUID; Attribute a = new UniqueIdentifierAttribute(t); a.addValue(studyInstanceUID); identifier.put(t,a); }
+            { AttributeTag t = TagFromName.PatientName; Attribute a = new UniqueIdentifierAttribute(t); a.addValue(studyInstanceUID); identifier.put(t,a); }
+            new MoveSOPClassSCU("192.168.3.109",443,"STORESCP109","MOVESCU","STORESCP",SOPClass.StudyRootQueryRetrieveInformationModelMove,identifier,0);
+        }
+        catch (DicomException | DicomNetworkException | IOException | ClassCastException | NullPointerException e) {
             System.err.println(e);
         }
     }
