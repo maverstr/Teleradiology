@@ -229,7 +229,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         // TODO : récupérer les dossiers non traités sur le serveur
-        scu.doMoveToMeScu("*"); //permet de récupérer tout ce qui est sur le serveur
+        scu.doGet("1.3.46.670589.11.17052.5.0.5396.2008041011440970008"); //permet de récupérer tout ce qui est sur le serveur
         //ATTENTION vérifier qu'on sait récup les infos
         /*ArrayList<String> receivedStudyInstanceUIDs = doFindScu(azaz.getText)
 

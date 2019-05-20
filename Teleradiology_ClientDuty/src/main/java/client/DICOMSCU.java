@@ -18,6 +18,7 @@ import com.pixelmed.dicom.DicomException;
 import com.pixelmed.dicom.DicomInputStream;
 import com.pixelmed.dicom.SOPClass;
 import com.pixelmed.dicom.SpecificCharacterSet;
+import com.pixelmed.dicom.StoredFilePathStrategy;
 import com.pixelmed.dicom.TagFromName;
 import com.pixelmed.dicom.UniqueIdentifierAttribute;
 import com.pixelmed.network.DicomNetworkException;
@@ -60,13 +61,13 @@ public class DICOMSCU {
         
         @Override
         public void doSomethingWithIdentifier(AttributeList identifier) throws DicomException {
-            System.out.println("Received C-FIND response:");
-            Set<AttributeTag> receivedTags = identifier.keySet();
+            System.out.println("Received CGET response:");
+            /*Set<AttributeTag> receivedTags = identifier.keySet();
             for( AttributeTag tag: receivedTags ){
                 System.out.println(tag.toString() + " :: " + identifier.get(tag).getSingleStringValueOrEmptyString());
             }
             
-            receivedStudyInstanceUIDs.add(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString());
+            receivedStudyInstanceUIDs.add(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString());*/
         }
     }
     
@@ -74,7 +75,8 @@ public class DICOMSCU {
 
         @Override
         public void sendReceivedObjectIndication(String dicomFileName, String transferSyntax, String callingAETitle) throws DicomNetworkException, DicomException, IOException {
-            if (dicomFileName != null) {
+            System.out.println("on a recu");
+            /*if (dicomFileName != null) {
                 System.err.println("Received: " + dicomFileName + " from " + callingAETitle + " in " + transferSyntax);
                 try {
                     AttributeList list;
@@ -86,7 +88,7 @@ public class DICOMSCU {
                 } catch (Exception e) {
                     System.err.println(e);
                 }
-            }
+            }*/
         }
     }
     
@@ -131,8 +133,22 @@ public class DICOMSCU {
         try {
             AttributeList identifier = new AttributeList();
             { AttributeTag t = TagFromName.QueryRetrieveLevel; Attribute a = new CodeStringAttribute(t); a.addValue("STUDY"); identifier.put(t,a); }
-            { AttributeTag t = TagFromName.StudyInstanceUID; Attribute a = new UniqueIdentifierAttribute(t); a.addValue(studyInstanceUID); identifier.put(t,a); }
-            new MoveSOPClassSCU("localhost",443,"STORESCP109","MOVESCU","STORESCP",SOPClass.StudyRootQueryRetrieveInformationModelMove,identifier);
+            { AttributeTag t = TagFromName.StudyInstanceUID; Attribute a = new UniqueIdentifierAttribute(t); a.addValue(studyInstanceUID); identifier.put(t,a);}
+            { AttributeTag t = TagFromName.PatientName; Attribute a = new UniqueIdentifierAttribute(t); a.addValue("David"); identifier.put(t,a); }
+            new MoveSOPClassSCU("192.168.3.109",443,"STORESCP109","MOVESCU","STORESCP110",SOPClass.StudyRootQueryRetrieveInformationModelMove,identifier);
+        }
+        catch (DicomException | DicomNetworkException | IOException | ClassCastException | NullPointerException e) {
+            System.err.println(e);
+        }
+    }
+    
+    public void doGet(String studyInstanceUID){
+        try {
+            AttributeList identifier = new AttributeList();
+            { AttributeTag t = TagFromName.QueryRetrieveLevel; Attribute a = new CodeStringAttribute(t); a.addValue("STUDY"); identifier.put(t,a); }
+            { AttributeTag t = TagFromName.StudyInstanceUID; Attribute a = new UniqueIdentifierAttribute(t); a.addValue(studyInstanceUID); identifier.put(t,a);}
+            //File file = new File("D:\\Users\\INFO-H-400\\libraries\\dcm4che-5.14.0\\bin");
+            new GetSOPClassSCU("localhost",11113,"DCMQRSCP","GETSCU",SOPClass.StudyRootQueryRetrieveInformationModelGet,identifier,new FindScuIdentifierHandler(),directory, StoredFilePathStrategy.BYSOPINSTANCEUIDCOMPONENTFOLDERS,new OurReceivedObjectHandler(),SOPClass.getSetOfStorageSOPClasses(),true,false,false);
         }
         catch (DicomException | DicomNetworkException | IOException | ClassCastException | NullPointerException e) {
             System.err.println(e);
