@@ -18,9 +18,11 @@ import com.pixelmed.network.DicomNetworkException;
 import com.pixelmed.network.FindSOPClassSCU;
 import com.pixelmed.network.IdentifierHandler;
 import com.pixelmed.network.MoveSOPClassSCU;
+import com.pixelmed.network.StorageSOPClassSCU;
 import java.awt.List;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,20 +37,24 @@ public class ClientUpload {
     private class FindScuIdentifierHandler extends IdentifierHandler {
         
         //public ArrayList<String> receivedStudyInstanceUIDs = new ArrayList();
+        public HashMap<String, AttributeList> receivedIdentifiers = new HashMap();
+        //public ArrayList<AttributeList> receivedIdentifiers = new ArrayList();
         public ArrayList<String> receivedStudyInstanceUIDs = new ArrayList();
         //public ArrayList<String> receivedReport = new ArrayList();
 
         
         @Override
         public void doSomethingWithIdentifier(AttributeList identifier) throws DicomException {
+            
             System.out.println("Received C-FIND response:");
             Set<AttributeTag> receivedTags = identifier.keySet();
             System.out.println("Je vais imprimer");
             for( AttributeTag tag: receivedTags ){
                 System.out.println(tag.toString() + " :: " + identifier.get(tag).getSingleStringValueOrEmptyString());
             }
-            
-            receivedStudyInstanceUIDs.add(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString());//là qu'on choisit quoi afficher après avoir recherché le patient
+            receivedIdentifiers.put(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString(),identifier);
+            //receivedIdentifiers.add(identifier);
+            //receivedStudyInstanceUIDs.add(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString());//là qu'on choisit quoi afficher après avoir recherché le patient
             //receivedReport.add(identifier.get(TagFromName.TextValue).getSingleStringValueOrEmptyString());
             System.out.println("j'ai imprimé");
         }
@@ -57,7 +63,7 @@ public class ClientUpload {
             
     }
     
-    public AttributeList doFindScu(String searchPatientName){
+    public HashMap<String,AttributeList> doFindScu(String searchPatientName){
         try {
             SpecificCharacterSet specificCharacterSet = new SpecificCharacterSet((String[])null);
             AttributeList identifier = new AttributeList();
@@ -84,7 +90,7 @@ public class ClientUpload {
                     SOPClass.StudyRootQueryRetrieveInformationModelFind,
                     identifier,
                     handler);
-                return identifier;
+                return handler.receivedIdentifiers;
         
         } catch (DicomException | DicomNetworkException | IOException ex) {
             Logger.getLogger(DICOMViewer.class.getName()).log(Level.SEVERE, null, ex);
@@ -93,15 +99,14 @@ public class ClientUpload {
         return null;
     }
     
-    public void doMoveScu(String studyInstanceUID) {
+    public void doStoreScu(String ImagePath) {
         try {
             AttributeList identifier = new AttributeList();
             System.out.println("A");
             { AttributeTag t = TagFromName.QueryRetrieveLevel; Attribute a = new CodeStringAttribute(t); a.addValue("STUDY"); identifier.put(t,a); }
             System.out.println("B");
-            { AttributeTag t = TagFromName.StudyInstanceUID; Attribute a = new UniqueIdentifierAttribute(t); a.addValue(studyInstanceUID); identifier.put(t,a); }
             System.out.println("C");
-            new MoveSOPClassSCU("localhost",4242,"ORTHANC","MOVESCU","STORESCP",SOPClass.StudyRootQueryRetrieveInformationModelMove,identifier);
+            new StorageSOPClassSCU("192.168.3.109",443,"STORESCP109","STORESCU",ImagePath,SOPClass.StudyRootQueryRetrieveInformationModelGet,identifier.get(TagFromName.QueryRetrieveLevel).getDelimitedStringValuesOrEmptyString(),0);
             System.out.println("D");
         }
         catch (Exception e) {

@@ -14,6 +14,7 @@ import com.pixelmed.dicom.DicomDirectoryRecord;
 import com.pixelmed.dicom.DicomInputStream;
 import com.pixelmed.dicom.TagFromName;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 import javax.swing.DefaultListModel;
 
@@ -24,9 +25,16 @@ import javax.swing.DefaultListModel;
 public class FindStudy extends javax.swing.JFrame {
     ClientUpload scu = new ClientUpload();
     AttributeList identifier;
+    
+    HashMap<String, AttributeList> identifiers = new HashMap();
+    
     /** Creates new form FindStudy */
     public FindStudy() {
         initComponents();
+        
+        //identifiers.put(studyUID,identifier);
+        //identifiers.get(studyUID);
+        
     }
 
     /** This method is called from within the constructor to
@@ -50,6 +58,12 @@ public class FindStudy extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         PatientNameLabel.setText("Patient Name");
+
+        dcmPatientNameField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dcmPatientNameFieldActionPerformed(evt);
+            }
+        });
 
         doCFindButton1.setText("C-FIND");
         doCFindButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -122,29 +136,32 @@ public class FindStudy extends javax.swing.JFrame {
         System.out.println("Find appelé");
         //String searchStudyUID = dcmPatientNameField.getText();
         String searchName = dcmPatientNameField.getText();
-        identifier = scu.doFindScu(searchName);
-        System.out.println(identifier.get(TagFromName.StudyInstanceUID));
+        identifiers = scu.doFindScu(searchName);//récupère une hashmap <studyInstanceUID,identifier>
         
-        if(identifier.get(TagFromName.StudyInstanceUID) != null ){
+        //System.out.println("------IDENTIFIER-----");
+        //System.out.println(identifier);
+        //System.out.println(identifier.get(TagFromName.StudyInstanceUID));
+        /*if(identifier.get(TagFromName.StudyInstanceUID) != null ){
             System.out.println("Trouvé!");
             ArrayList<String> receivedStudyInstanceUIDs = new ArrayList();
-            System.out.println("Bla");
+            //System.out.println("Bla");
             DefaultListModel<String> receivedListModel = new DefaultListModel();
-            System.out.println("Bla Bla");
+            //System.out.println("Bla Bla");
             Set<AttributeTag> receivedTags = identifier.keySet();
             System.out.println("Je vais imprimer");
             for( AttributeTag tag: receivedTags ){
                 System.out.println(tag.toString() + " :: " + identifier.get(tag).getSingleStringValueOrEmptyString());
             }
-            //receivedStudyInstanceUIDs.add(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString());//là qu'on choisit quoi afficher après avoir recherché le patient
-            //System.out.println(identifier.get(TagFromName.StudyInstanceUID));
+            receivedStudyInstanceUIDs.add(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString());//là qu'on choisit quoi afficher après avoir recherché le patient
+            //identifiers.put(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString(), identifier);
+            System.out.println(identifier.get(TagFromName.StudyInstanceUID));
             System.out.println("Bla Bla Bla");
             
             for(String uid : receivedStudyInstanceUIDs){
                 receivedListModel.addElement(uid);
                 System.out.println("000");
                 /*patientModel = new PersonListModel(patientController.findPatientEntities());
-                System.out.println("1");*/
+                System.out.println("1");
                 receivedUIDList.setModel(receivedListModel);
                 System.out.println("2");
             }
@@ -152,31 +169,56 @@ public class FindStudy extends javax.swing.JFrame {
         
         else{
             System.out.println("rien trouvé");
+        }*/
+        Set<String> uids = identifiers.keySet();
+        DefaultListModel<String> receivedListModel = new DefaultListModel();
+        for( String uid : uids ){
+            receivedListModel.addElement(uid);
+                System.out.println("000");
+                //patientModel = new PersonListModel(patientController.findPatientEntities());
+                System.out.println("1");
+                receivedUIDList.setModel(receivedListModel);
+                System.out.println("2");
         }
     }//GEN-LAST:event_doCFindButton1doCFindButtonActionPerformed
 
     private void receivedUIDListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_receivedUIDListValueChanged
         // TODO add your handling code here:
         Object selectedObject = receivedUIDList.getSelectedValue();
-        System.out.println("11");
+        System.out.println(selectedObject);
         //AttributeList al = new AttributeList();
         //DicomDirectoryRecord ddr = (DicomDirectoryRecord) selectedObject;
         System.out.println("12");
         //AttributeList al = ddr.getAttributeList();
         //System.out.println("13");
         //al.read(evt);
-        if(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString().equals(selectedObject)){
+        Set<String> uids = identifiers.keySet();
+        for(String uid : uids){
+            if(uid == selectedObject){
+                System.out.println("14");
+                String x = identifiers.get(uid).get(TagFromName.TextValue).getSingleStringValueOrEmptyString();
+                System.out.println("15");
+                ReportReadLabel.setText(x);
+                System.out.println("16");
+            }
+        }
+        System.out.println("17");
+        /*if(identifier.get(TagFromName.StudyInstanceUID).getSingleStringValueOrEmptyString().equals(selectedObject)){
             System.out.println("14");
             String x = identifier.get(TagFromName.TextValue).getSingleStringValueOrEmptyString();
             System.out.println("15");
             ReportReadLabel.setText(x);
             System.out.println("16");
         }
-        System.out.println("17");
+        System.out.println("17");*/
         //Object selectedObject = receivedUIDList.getSelectedValue();
         //String x = selectedObject.GetReport();
         //ReportReadLabel.setText(x);
     }//GEN-LAST:event_receivedUIDListValueChanged
+
+    private void dcmPatientNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dcmPatientNameFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_dcmPatientNameFieldActionPerformed
 
     /**
      * @param args the command line arguments
