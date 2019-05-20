@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  * @author INFO-H-400
  */
 public class Report extends StructuredReport{
-
+    private String path;
     
     
     public Report(AttributeList al, String text) throws DicomException { //choisir la methode pour construire un nouveau rapport
@@ -32,9 +32,9 @@ public class Report extends StructuredReport{
         System.out.println(al.toString());
         SpecificCharacterSet scs = new SpecificCharacterSet((String[])null); //créé un scs vide qui sera rempli à la ligne suivante
         al.putNewAttribute(TagFromName.TextValue, scs).addValue(text); //rempli l'attribut TEXTVALUE avec du text
-        String path = al.get(TagFromName.ReferencedFileID).getDelimitedStringValuesOrEmptyString();
+        path ="D:\\Users\\INFO-H-400\\libraries\\dcm4che-5.14.0\\bin\\DICOMDIR\\"+al.get(TagFromName.ReferencedFileID).getDelimitedStringValuesOrEmptyString()+"Report.dcm";
         try {
-            FileOutputStream os = new FileOutputStream("D:\\Users\\INFO-H-400\\libraries\\dcm4che-5.14.0\\bin\\DICOMDIR\\"+path+"Report.dcm");
+            FileOutputStream os = new FileOutputStream(path);
             DicomOutputStream dos = new DicomOutputStream(os, null, "1.2.840.10008.1.2");   //Dicom output stream has transfert syntax uid :
                                                                                             //Implicit VR Endian: Default Transfer Syntax for DICOM
             al.write(dos);
@@ -44,5 +44,10 @@ public class Report extends StructuredReport{
         } catch (IOException ex) {
             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public String getReportPath(){
+        
+        return path;
     }
 }

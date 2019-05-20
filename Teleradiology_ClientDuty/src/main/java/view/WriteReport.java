@@ -12,6 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import client.DICOMSCU;
+import com.pixelmed.network.DicomNetworkException;
+import java.io.IOException;
 
 /**
  *
@@ -21,7 +23,7 @@ public class WriteReport extends javax.swing.JFrame {
     
     private static Report rep;
     private static AttributeList al;
-    private static DICOMSCU scu =new DICOMSCU();
+    private static final DICOMSCU scu =new DICOMSCU();
     
     /**
      * Creates new form WriteReport
@@ -109,7 +111,12 @@ public class WriteReport extends javax.swing.JFrame {
                 Logger.getLogger(WriteReport.class.getName()).log(Level.SEVERE, null, ex);
             }
             System.out.println(s + "\nSaved in DICOM SR \n");
-            scu.doMoveToYouScu(al);
+            try {
+                scu.doStore(al,rep);
+                System.out.println("On a bien envoyé le rapport");
+            } catch (DicomException | DicomNetworkException | IOException ex) {
+                Logger.getLogger(WriteReport.class.getName()).log(Level.SEVERE, null, ex);
+            }
             CloseFrame();
         }
     }//GEN-LAST:event_saveButtonActionPerformed
